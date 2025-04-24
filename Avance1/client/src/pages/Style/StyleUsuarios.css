@@ -1,0 +1,34 @@
+/* Estilo para el botón de "Hacer Admin" */
+button.hacer-admin {
+    background-color: #4b4b4b; /* Color verde */
+  }
+  
+  button.hacer-admin:hover {
+    background-color: #1e1e1e; /* Color verde oscuro en hover */
+  }
+  
+  /* Estilo para el botón de "Desactivar Cuenta" */
+  .usuarios-container button.desactivar-cuenta {
+    background-color: #a51212 !important; /* Color base */
+  }
+  
+  .usuarios-container button.desactivar-cuenta:hover {
+    background-color: #4f0a0a !important; /* Color de hover */
+  }
+  
+  
+  /* Estilo general de los botones */
+  button {
+    padding: 10px 20px;
+    color: rgb(226, 226, 226);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #383838;
+  }
+  
+  

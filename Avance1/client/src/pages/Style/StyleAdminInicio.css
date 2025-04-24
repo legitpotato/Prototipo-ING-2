@@ -1,0 +1,85 @@
+/* Aseguramos que el fondo no se mueva */
+body {
+    background-image: url('../imagenes/fondo.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+}
+
+/* Contenedor principal */
+.container {
+  padding: 30px;
+  padding-bottom: 80px; /* Para que no choque con el footer */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tabla */
+table {
+  width: 100%;
+  margin-top: 30px;
+  margin-left: 130px; /* Desplazamos la tabla hacia la derecha */
+  border-collapse: collapse;
+  background-color: rgba(255, 255, 255, 0.5); /* Aumentada la transparencia */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Encabezado de la tabla */
+th {
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro para los encabezados */
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-size: 16px;
+}
+
+/* Celdas de la tabla */
+td {
+  background-color: rgba(255, 255, 255, 0.3); /* Fondo blanco semi-transparente */
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  color: black; /* Cambiado a negro para contraste */
+  border-top: 1px solid rgba(0, 0, 0, 0.1); /* Delgada línea para separar filas */
+}
+
+/* Hover en las filas */
+tr:hover td {
+  background-color: rgba(0, 0, 0, 0.1); /* Efecto hover */
+}
+
+/* Mostrar mensaje de no libros disponibles */
+td[colspan="9"] {
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 16px;
+}
+
+/* Estilo del Footer */
+.footer {
+  background-color: #000000;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+  transform: translateY(100%);
+}
+
+.footer.visible {
+  transform: translateY(0);
+}
+
+.footer.hidden {
+  transform: translateY(100%);
+}

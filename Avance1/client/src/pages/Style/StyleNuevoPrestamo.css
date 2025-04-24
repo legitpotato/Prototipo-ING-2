@@ -1,0 +1,74 @@
+/* Estilos generales */
+.nuevo-prestamo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ocupa toda la pantalla */
+    background-image: url('../imagenes/fondo.png'); /* Fondo con imagen */
+    background-size: cover; /* Cubre toda la pantalla */
+    background-position: center; /* Centrado */
+    color: #131313; 
+  }
+  
+  .nuevo-prestamo form {
+    width: 300px; /* Ancho fijo */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra todos los elementos del formulario */
+  }
+  
+  /* Encabezado */
+  .nuevo-prestamo h2 {
+    text-align: center;
+    color: #333; /* Color de texto negro para encabezado */
+    margin-bottom: 20px;
+  }
+  
+  /* Inputs y selects */
+  .nuevo-prestamo input,
+  .nuevo-prestamo select {
+    width: 100%; /* Se ajustan al ancho del formulario */
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px; /* Tamaño del texto */
+    color: #333; /* Color de texto negro */
+  }
+  
+  /* Para asegurarnos de que el select de libros esté centrado */
+  .nuevo-prestamo select {
+    text-align: center; /* Esto asegura que el texto dentro del select esté centrado */
+    padding-left: 10px; /* Ajusta el padding si es necesario */
+    margin: 0; /* Elimina cualquier margen que pueda estar desplazando el select */
+  }
+  
+  /* Botón */
+  .nuevo-prestamo button {
+    width: 100%; /* Botón del ancho del formulario */
+    padding: 10px;
+    background-color: #555; /* Botón gris oscuro */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .nuevo-prestamo button:hover {
+    background-color: #444; /* Hover más oscuro */
+  }
+  
+  /* Mensaje */
+  .nuevo-prestamo p {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #36a12a;
+  }
+  

@@ -1,0 +1,70 @@
+/* Estilo para el botón Eliminar */
+.btn-eliminar {
+    background-color: #444; /* Gris oscuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-eliminar:hover {
+    background-color: #333; /* Gris aún más oscuro al pasar el mouse */
+    cursor: pointer;
+  }
+  
+  /* Caja para Agregar Nuevo Libro */
+  .formulario-agregar-libro {
+    background-color: rgba(255, 255, 255, 0.495); /* Fondo semi-transparente blanco */
+    padding: 30px;
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 50px; /* Espacio en la parte inferior */
+  }
+  
+  /* Estilo para los inputs dentro del formulario */
+  .formulario-agregar-libro input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd; /* Borde gris claro */
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f9f9f9; /* Fondo claro para los inputs */
+    transition: all 0.3s ease;
+  }
+  
+  /* Efecto de foco en los inputs */
+  .formulario-agregar-libro input:focus {
+    border-color: #2d2d2d; /* Borde verde al enfocar */
+    background-color: #fff; /* Fondo blanco cuando se hace foco */
+    outline: none;
+  }
+  
+  /* Estilo para el botón de agregar libro */
+  .formulario-agregar-libro button {
+    background-color: #4a4a4a; /* Verde */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  /* Efecto hover en el botón */
+  .formulario-agregar-libro button:hover {
+    background-color: #282828; /* Un verde más oscuro al pasar el mouse */
+    transform: scale(1.05); /* Aumenta el tamaño ligeramente */
+  }
+  /* Clase para mover la caja hacia la derecha */
+  .formulario-agregar-libro.derecha {
+    margin-left: 350px; /* Ajusta este valor según el desplazamiento deseado */
+    transform: translateX(50px); /* Desplaza adicionalmente 50px a la derecha */
+    transition: transform 0.3s ease; /* Transición suave para los movimientos */
+  }

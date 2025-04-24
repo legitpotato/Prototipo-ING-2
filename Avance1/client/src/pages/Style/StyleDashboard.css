@@ -1,0 +1,34 @@
+/* src/StyleDashboard.css */
+
+.dashboard {
+    width: 250px;
+    background-color: #27272a;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.dashboard ul {
+    list-style: none;
+    padding: 0;
+}
+
+.dashboard li {
+    margin: 20px 0;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dashboard li:hover {
+    background-color: white;
+    color: black;
+}
+
+.dashboard li a {
+    color: white;
+    text-decoration: none;
+}
