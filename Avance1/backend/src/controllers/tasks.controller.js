@@ -1,4 +1,4 @@
-import Task from '../models/task.model.js'
+import Task from '../../models/task.model.js'
 
 // Obtener todas las documentos de la base de datos
 export const getTasks = async (req, res) => {

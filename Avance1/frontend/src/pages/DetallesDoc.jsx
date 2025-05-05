@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom"; // Importa hooks para obtener parámetros de la URL y manejar navegación
 import { useTasks } from "../context/TasksContext"; // Importa el contexto de tareas para acceder a los documentos
 import { useState } from "react"; // Hook para manejar el estado local
-import User from "../../../src/models/user.model" //Importa el modelo de usuario
+import User from "../../../backend/models/user.model" //Importa el modelo de usuario
 import { useAuth } from "../context/AuthContext";
 import Comprobante from '../components/Comprobante';
 

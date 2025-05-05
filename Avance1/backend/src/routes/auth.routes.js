@@ -3,7 +3,7 @@ import { Router } from "express";  // Router de Express para manejar las rutas
 import { login, register, logout, profile, verifyToken, deleteUser, deleteLastUser, updateUser } from "../controllers/auth.controller.js"; // Controladores que gestionan las operaciones relacionadas con la autenticación de usuarios
 import { authRequired } from '../middlewares/validateToken.js';  // Middleware que asegura que el usuario esté autenticado
 import { validateSchema } from "../middlewares/validator.middleware.js"; // Middleware para validar los datos de entrada según un esquema
-import { registerSchema, loginSchema } from "../schemas/auth.schema.js"; // Esquemas de validación para el registro y el inicio de sesión
+import { registerSchema, loginSchema } from "../../schemas/auth.schema.js"; // Esquemas de validación para el registro y el inicio de sesión
 
 // Crea una nueva instancia del enrutador de Express
 const router = Router();
