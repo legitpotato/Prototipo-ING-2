@@ -1,22 +1,12 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import cors from 'cors';
+import usersRoutes from './routes/usersRoutes.js';
 
 const app = express();
-const prisma = new PrismaClient();
 
+app.use(cors());
 app.use(express.json());
 
-// Ejemplo de ruta
-app.get('/', async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
-});
+app.use('/api', usersRoutes);
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+export default app;

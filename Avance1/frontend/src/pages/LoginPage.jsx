@@ -1,76 +1,77 @@
-import { useForm } from 'react-hook-form'; // Hook para manejar formularios y validaciones
-import { useAuth } from '../context/AuthContext'; // Contexto de autenticación
-import { Link, useNavigate } from 'react-router-dom'; // Navegación entre rutas
-import { useEffect } from 'react'; // Hook para manejar efectos secundarios
+import { useForm } from 'react-hook-form';
+import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 function LoginPage() {
-  
-  // useForm devuelve funciones para manejar el formulario y errores de validación
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  
-  // useAuth proporciona funciones y estados relacionados con la autenticación
+  const {
+    register,
+    handleSubmit,
+    formState: { errors: formErrors },
+  } = useForm();
+
   const { signin, errors: signinErrors, isAuthenticated } = useAuth();
-  
-  const navigate = useNavigate(); // Hook para navegar entre rutas
+  const navigate = useNavigate();
 
-  // Función que se ejecuta al enviar el formulario
-  const onSubmit = handleSubmit(data => {
-    signin(data); // Llama a la función de inicio de sesión con los datos del formulario
-  });
+  const onSubmit = async (data) => {
+    await signin(data);
+  };
 
-  // useEffect se ejecuta cuando cambia isAuthenticated
   useEffect(() => {
-    if (isAuthenticated) navigate("/"); // Si el usuario está autenticado, redirige a la página principal
+    if (isAuthenticated) navigate('/');
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
-      <div className='bg-zinc-800 max-w-md w-full p-10 rounded-md'>
-        
-        {/* Muestra errores de inicio de sesión */}
-        {signinErrors.map((error, i) => (
-          <div className='bg-red-500 p-2 text-white text-center my-2' key={i}>
-            {error}
-          </div>
-        ))}
-        
-        <h1 className='text-3xl font-bold my-2'>Inicia Sesión</h1>
+    <div className="flex h-[calc(100vh-100px)] items-center justify-center">
+      <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
 
-        {/* Formulario de inicio de sesión */}
-        <form onSubmit={onSubmit}>
-          
-          {/* Campo de correo electrónico */}
+        {/* Errores del backend */}
+        {signinErrors.length > 0 &&
+          signinErrors.map((error, i) => (
+            <div key={i} className="bg-red-500 p-2 text-white text-center my-2 rounded">
+              {error}
+            </div>
+          ))}
+
+        <h1 className="text-3xl font-bold text-center mb-6">Inicia Sesión</h1>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+
+          {/* Correo */}
           <input
             type="email"
-            {...register("correo", { required: true })} // Registro del campo en useForm con validación requerida
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            {...register('correo', { required: 'El correo es requerido' })}
             placeholder="Correo"
+            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
           />
-          {errors.correo && (
-            <p className="text-red-500">Se requiere Correo</p> // Muestra mensaje de error si no se ingresa el correo
+          {formErrors.correo && (
+            <p className="text-red-400 text-sm">{formErrors.correo.message}</p>
           )}
 
-          {/* Campo de contraseña */}
+          {/* Contraseña */}
           <input
             type="password"
-            {...register("contraseña", { required: true })} // Registro del campo en useForm con validación requerida
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            {...register('contraseña', { required: 'La contraseña es requerida' })}
             placeholder="Contraseña"
+            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
           />
-          {errors.contraseña && (
-            <p className="text-red-500">Se requiere Contraseña</p> // Muestra mensaje de error si no se ingresa la contraseña
+          {formErrors.contraseña && (
+            <p className="text-red-400 text-sm">{formErrors.contraseña.message}</p>
           )}
 
-          {/* Botón para enviar el formulario */}
-          <button type="submit" className='bg-sky-500 text-white px-4 py-2 rounded-md my-2'>
+          <button
+            type="submit"
+            className="w-full bg-sky-500 hover:bg-sky-600 transition-colors text-white px-4 py-2 rounded-md my-4"
+          >
             Iniciar Sesión
           </button>
         </form>
 
-        {/* Enlace para redirigir a la página de registro */}
-        <p className='flex gap-x-2 justify-between'>
-          No tienes una cuenta?{" "}
-          <Link to="/register" className='text-sky-500'>Regístrate</Link>
+        <p className="text-sm text-center">
+          ¿No tienes una cuenta?{" "}
+          <Link to="/register" className="text-sky-400 hover:underline">
+            Regístrate
+          </Link>
         </p>
       </div>
     </div>

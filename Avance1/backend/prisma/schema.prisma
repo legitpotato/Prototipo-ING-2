@@ -3,18 +3,19 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  birthDate DateTime
-  firstName String
-  lastName  String
-  rut       String   @unique
+  id             Int      @id @default(autoincrement())
+  uid            String   @unique // ID de Firebase
+  email          String   @unique
+  rut            String   @unique
+  firstName      String
+  lastName       String
+  birthDate      DateTime
+  role           String   @default("vecino") // "admin", "conserje", etc.
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }

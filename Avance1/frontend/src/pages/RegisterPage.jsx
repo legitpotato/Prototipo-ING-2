@@ -13,8 +13,21 @@ function RegisterPage() {
     }, [isAuthenticated]);
 
     const onSubmit = handleSubmit(async (values) => {
-        const dataToSend = { ...values, admin: false };
-        await signup(dataToSend);
+        // Mapear los nombres a lo que Firebase espera
+        const firebasePayload = {
+            email: values.email,
+            password: values.password,
+        };
+
+        // Datos adicionales para guardar en PostgreSQL vía API backend
+        const additionalData = {
+            rut: values.rut,
+            nombre: values.nombre,
+            apellido: values.apellido,
+            fechaNacimiento: values.fechaNacimiento,
+        };
+
+        await signup(firebasePayload, additionalData);
     });
 
     return (
@@ -29,7 +42,6 @@ function RegisterPage() {
 
                 <form onSubmit={onSubmit}>
 
-                    {/* Rut */}
                     <input
                         type="text"
                         {...register("rut", {
@@ -44,7 +56,6 @@ function RegisterPage() {
                     />
                     {errors.rut && <p className="text-red-500">{errors.rut.message}</p>}
 
-                    {/* Nombre */}
                     <input
                         type="text"
                         {...register("nombre", { required: "Se requiere Nombre" })}
@@ -53,7 +64,6 @@ function RegisterPage() {
                     />
                     {errors.nombre && <p className="text-red-500">{errors.nombre.message}</p>}
 
-                    {/* Apellido */}
                     <input
                         type="text"
                         {...register("apellido", { required: "Se requiere Apellido" })}
@@ -62,7 +72,6 @@ function RegisterPage() {
                     />
                     {errors.apellido && <p className="text-red-500">{errors.apellido.message}</p>}
 
-                    {/* Fecha de Nacimiento */}
                     <input
                         type="text"
                         {...register("fechaNacimiento", {
@@ -77,7 +86,6 @@ function RegisterPage() {
                     />
                     {errors.fechaNacimiento && <p className="text-red-500">{errors.fechaNacimiento.message}</p>}
 
-                    {/* Correo electrónico */}
                     <input
                         type="email"
                         {...register("email", { required: "Se requiere Correo Electrónico" })}
@@ -86,10 +94,9 @@ function RegisterPage() {
                     />
                     {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-                    {/* Contraseña */}
                     <input
                         type="password"
-                        {...register("contraseña", {
+                        {...register("password", {
                             required: "Se requiere Contraseña",
                             pattern: {
                                 value: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/,
@@ -99,7 +106,7 @@ function RegisterPage() {
                         className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
                         placeholder="Contraseña"
                     />
-                    {errors.contraseña && <p className="text-red-500">{errors.contraseña.message}</p>}
+                    {errors.password && <p className="text-red-500">{errors.password.message}</p>}
 
                     <button
                         type="submit"

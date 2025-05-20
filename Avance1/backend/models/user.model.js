@@ -8,8 +8,9 @@ const userSchema = new mongoose.Schema({
         type: String,  // El tipo de datos es cadena de texto
         require: true, // Este campo es obligatorio
         trim: true,    // Elimina los espacios en blanco al principio y al final
+        unique: true,
     },
-    
+
     // Nombre del usuario
     nombre: {
         type: String,  // El tipo de datos es cadena de texto
@@ -25,7 +26,7 @@ const userSchema = new mongoose.Schema({
     },
 
     // Dirección del usuario (puede ser una dirección física)
-    direccion: {
+    fec_nacim: {
         type: String,  // El tipo de datos es cadena de texto
         require: true, // Este campo es obligatorio
         trim: true,    // Elimina los espacios en blanco al principio y al final
@@ -39,13 +40,6 @@ const userSchema = new mongoose.Schema({
         unique: true,  // Este campo debe ser único en la base de datos (no se pueden repetir correos)
     },
 
-    // Teléfono del usuario
-    telefono: {
-        type: String,  // El tipo de datos es cadena de texto
-        require: true, // Este campo es obligatorio
-        trim: true,    // Elimina los espacios en blanco al principio y al final
-    },
-
     // Contraseña del usuario (encriptada antes de ser guardada en la base de datos)
     contraseña: {
         type: String,  // El tipo de datos es cadena de texto
@@ -53,7 +47,7 @@ const userSchema = new mongoose.Schema({
     },
 
     // Campo que indica si el usuario es administrador
-    admin: {
+    rol: {
         type: Boolean,    // El tipo de datos es booleano (true o false)
         default: false,   // Los usuarios serán clientes por defecto (no administradores)
     },
