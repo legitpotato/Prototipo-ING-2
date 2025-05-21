@@ -40,23 +40,23 @@ function LoginPage() {
           {/* Correo */}
           <input
             type="email"
-            {...register('correo', { required: 'El correo es requerido' })}
+            {...register('email', { required: 'El correo es requerido' })}
             placeholder="Correo"
             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
           />
-          {formErrors.correo && (
-            <p className="text-red-400 text-sm">{formErrors.correo.message}</p>
+          {formErrors.email && (
+            <p className="text-red-400 text-sm">{formErrors.email.message}</p>
           )}
 
           {/* Contraseña */}
           <input
             type="password"
-            {...register('contraseña', { required: 'La contraseña es requerida' })}
+            {...register('password', { required: 'La contraseña es requerida' })}
             placeholder="Contraseña"
             className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
           />
-          {formErrors.contraseña && (
-            <p className="text-red-400 text-sm">{formErrors.contraseña.message}</p>
+          {formErrors.password && (
+            <p className="text-red-400 text-sm">{formErrors.password.message}</p>
           )}
 
           <button

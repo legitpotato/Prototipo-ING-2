@@ -48,7 +48,7 @@ function Navbar() {
                                 to="/perfil" 
                                 className="hover:underline hover:text-blue-500"
                             >
-                                ¡Bienvenido {user.nombre}!
+                                ¡Bienvenido {user?.email}!
                             </Link>
                         </li>
 

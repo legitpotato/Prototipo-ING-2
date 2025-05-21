@@ -22,10 +22,11 @@ function RegisterPage() {
         // Datos adicionales para guardar en PostgreSQL vía API backend
         const additionalData = {
             rut: values.rut,
-            nombre: values.nombre,
-            apellido: values.apellido,
-            fechaNacimiento: values.fechaNacimiento,
-        };
+            firstName: values.nombre,
+            lastName: values.apellido,
+            birthDate: values.fechaNacimiento,
+            };
+
 
         await signup(firebasePayload, additionalData);
     });

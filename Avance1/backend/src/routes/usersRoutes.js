@@ -27,13 +27,15 @@ router.post('/usuarios', verifyFirebaseToken, async (req, res) => {
   const { rut, firstName, lastName, birthDate } = req.body;
 
   try {
-    // Verificar si el usuario ya existe
+    // Convertir fecha de "DD/MM/YYYY" a Date
+    const [day, month, year] = birthDate.split('/');
+    const formattedDate = new Date(`${year}-${month}-${day}`);
+
     const existingUser = await prisma.user.findUnique({ where: { uid } });
     if (existingUser) {
       return res.status(400).json({ message: 'El usuario ya está registrado' });
     }
 
-    // Crear nuevo usuario
     const user = await prisma.user.create({
       data: {
         uid,
@@ -41,15 +43,18 @@ router.post('/usuarios', verifyFirebaseToken, async (req, res) => {
         rut,
         firstName,
         lastName,
-        birthDate: new Date(birthDate),
+        birthDate: formattedDate,
       },
     });
 
     res.status(201).json(user);
   } catch (error) {
     console.error('Error al registrar usuario:', error);
-    res.status(500).json({ message: 'Error al registrar usuario' });
+    res.status(500).json({ message: 'Error al registrar usuario', error });
   }
+  console.log("Datos recibidos:", req.body);
+  console.log("Usuario Firebase:", req.firebaseUser);
 });
+
 
 export default router;

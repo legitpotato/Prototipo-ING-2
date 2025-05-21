@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { registerRequest, loginRequest, verityTokenRequest } from "../api/auth";
-import Cookies from "js-cookie";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 
 // Crear el contexto
 export const AuthContext = createContext();
@@ -21,19 +21,14 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-
- 
+  // Registrar nuevo usuario
   const signup = async ({ email, password }, additionalData) => {
     try {
-      // 1. Crear usuario en Firebase
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      // 2. Obtener token de Firebase
       const token = await user.getIdToken();
 
-      // 3. Enviar datos adicionales a tu backend
-      const res = await fetch("https://tu-api.com/api/usuarios", {
+      const res = await fetch("http://localhost:4000/api/usuarios", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,14 +49,15 @@ export const AuthProvider = ({ children }) => {
       handleError(error);
     }
   };
-  
-
 
   // Iniciar sesión
-  const signin = async (userData) => {
+  const signin = async ({ email, password }) => {
     try {
-      const res = await loginRequest(userData);
-      setUser(res.data);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+
+      setUser(user);
       setIsAuthenticated(true);
       setErrors([]);
     } catch (error) {
@@ -70,22 +66,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Cerrar sesión
-  const logout = () => {
-    Cookies.remove("token");
+  const logout = async () => {
+    await signOut(auth);
     setUser(null);
     setIsAuthenticated(false);
   };
 
   // Manejo de errores
   const handleError = (error) => {
-    if (error.response?.data) {
-      if (Array.isArray(error.response.data)) {
-        setErrors(error.response.data);
-      } else if (typeof error.response.data === "object") {
-        setErrors([error.response.data.message || "Error desconocido"]);
-      } else {
-        setErrors([error.response.data]);
-      }
+    if (error.code) {
+      setErrors([error.message]);
     } else {
       setErrors(["Error de conexión con el servidor"]);
     }
@@ -99,32 +89,20 @@ export const AuthProvider = ({ children }) => {
     }
   }, [errors]);
 
-  // Verifica token al montar el componente
+  // Verifica el estado de autenticación al montar
   useEffect(() => {
-    const checkLogin = async () => {
-      const token = Cookies.get("token");
-      if (!token) {
-        setIsAuthenticated(false);
-        setUser(null);
-        return setLoading(false);
-      }
-
-      try {
-        const res = await verityTokenRequest(token);
-        if (!res.data) throw new Error("Token inválido");
-        setUser(res.data);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
         setIsAuthenticated(true);
-      } catch (error) {
-        console.error("Token inválido o expirado:", error);
+      } else {
         setUser(null);
         setIsAuthenticated(false);
-        Cookies.remove("token");
-      } finally {
-        setLoading(false);
       }
-    };
+      setLoading(false);
+    });
 
-    checkLogin();
+    return () => unsubscribe();
   }, []);
 
   return (
