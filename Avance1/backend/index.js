@@ -1,8 +1,13 @@
-import app from "./src/app.js";
-import { connectDB } from "./db.js";
+import express from 'express';
+import cors from 'cors';
+import pagoRoutes from './src/routes/pagoRoutes.js';
 
+const app = express();
 
-// Conecta a una base de datos desde el puerto 4000
-connectDB();
-app.listen(4000)
-console.log('Server on port', 4000)
+app.use(cors()); // Esto habilita CORS para todas las rutas y orígenes
+app.use(express.json());
+app.use('/pagos', pagoRoutes);
+
+app.listen(4000, () => {
+  console.log('Server on port 4000');
+});
