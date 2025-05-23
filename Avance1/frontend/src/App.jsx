@@ -24,7 +24,6 @@ import Footer from './components/Footer'; // Componente de pie de página
 
 import Historial from './pages/Historial'; // Página de historial
 import Usuarios from './pages/Usuarios'; // Página de gestión de usuarios
-import PagosPage from './pagesNew/PagPagos';
 
 
 // Layout para las páginas administrativas
@@ -62,10 +61,8 @@ function App() {
 
                 <Route path="/carrito" element={<Carrito />} />
 
-                <Route path="/pagos" element={<PagosPage/>} />
                 {/* Rutas protegidas */}
-                <Route element={<ProtectedRoute />}>       
-                  
+                <Route element={<ProtectedRoute />}>          
                 {/* Rutas administrativas con layout */}
                 <Route path="/añadir-doc" element={<AdminLayout><RegistroDoc /></AdminLayout>} />
                 <Route path="/editar-doc" element={<AdminLayout><PagDoc /></AdminLayout>} />

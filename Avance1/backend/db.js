@@ -1,19 +1,14 @@
-import dotenv from 'dotenv';
-import pkg from 'pg';
+import mongoose from "mongoose";
 
-dotenv.config();
-
-const { Pool } = pkg;
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
-export function connectDB() {
-  return pool.connect();
+// Conexion de la base de datos utilizando mongoose
+// Mostrando en consola si la conexion es efectiva o no
+// Conection to the DB
+export const connectDB = async() => {
+    try {
+        await mongoose.connect('mongodb+srv://yobi:nose@desarrolloweb.k2vh2.mongodb.net/biblioteca_db?retryWrites=true&w=majority&appName=DesarrolloWeb');
+        console.log('>>> DB connected');
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
-
-export default pool;
