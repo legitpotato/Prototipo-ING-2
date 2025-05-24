@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-
+import React, { useEffect } from 'react';
+import { auth } from './firebase';
 import Principal from './pages/PagPrincipal';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
@@ -12,6 +13,8 @@ import DetallesDoc from './pages/DetallesDoc';
 import Documentos from './pages/Documentos';
 
 import ResetPasswordPage from './pages/ResetPasswordPage'; //Página reset password
+
+import MorosidadPage from './pages/morosidadPage';
 
 import PagAdmin from './components/PagAdmin';
 
@@ -38,11 +41,25 @@ const AdminLayout = ({ children }) => {
   );
 };
 
+
 AdminLayout.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
 function App() {
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const token = await user.getIdToken();
+        console.log("Token de Firebase:", token);
+        // Aquí puedes enviarlo a tu backend o guardarlo en estado global
+      } else {
+        console.log("Usuario no autenticado");
+      }
+    });
+
+    return () => unsubscribe(); // Limpia el listener
+  }, []);
   return (
     <AuthProvider>
       <TaskProvider>
@@ -63,6 +80,7 @@ function App() {
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/pagos" element={<PagPagos />} />
                 <Route path="/carrito" element={<Carrito />} />
+                <Route path="/morosidad" element={<MorosidadPage />} />
 
                 {/* Rutas protegidas */}
                 <Route element={<ProtectedRoute />}>          
