@@ -3,11 +3,11 @@
 function Footer() {
     return (
         <footer 
-            className="w-full h-16 bg-zinc-800 flex justify-between items-center px-5 mt-10"
+            className="w-full h-16 bg-blue-500 flex justify-between items-center px-5 mt-10"
         >
             {/* Sección de derechos de autor */}
             <p className="text-white">
-                &copy; 2024 Biblioteca Municipal Estación Central. <br /> 
+                &copy; 2025 ComuniRed. <br /> 
                 Todos los derechos reservados.
             </p>
 

@@ -7,11 +7,24 @@ export default function PagPagos() {
   const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:4000/pagos')  // Cambia la URL si es diferente
-      .then(res => res.json())
-      .then(data => setPagos(data))
-      .catch(err => console.error('Error fetching pagos:', err));
-  }, []);
+  fetch('http://localhost:4000/pagos')
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`Error en la API: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (Array.isArray(data)) {
+        setPagos(data);
+      } else {
+        console.error("Error: La respuesta de pagos no es un array", data);
+        setPagos([]); 
+      }
+    })
+    .catch(err => console.error("Error fetching pagos:", err));
+}, []);
+
 
   // Filtrar pagos según estado
   const pagosFiltrados = pagos.filter(pago => {
