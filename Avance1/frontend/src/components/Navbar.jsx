@@ -48,18 +48,18 @@ function Navbar() {
                                 to="/perfil" 
                                 className="hover:underline hover:text-blue-500"
                             >
-                                ¡Bienvenido {user?.email}!
+                                ¡Bienvenido {user?.firstName}!
                             </Link>
                         </li>
 
-                        {user.admin === true && (
+                        {user?.role == 'directiva' && (
                             <>
                                 <li className="mr-6">
                                     <Link 
                                         to='/añadir-doc' 
                                         className="bg-zinc-500 hover:bg-zinc-600 px-4 py-1 rounded-sm"
                                     >
-                                        Panel de Control
+                                        Panel de Administración
                                     </Link>
                                 </li>
                             </>

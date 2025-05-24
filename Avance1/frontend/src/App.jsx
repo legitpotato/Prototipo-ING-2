@@ -11,9 +11,11 @@ import Catalogo from './pages/Catalogo';
 import DetallesDoc from './pages/DetallesDoc';
 import Documentos from './pages/Documentos';
 
-
+import ResetPasswordPage from './pages/ResetPasswordPage'; //Página reset password
 
 import PagAdmin from './components/PagAdmin';
+
+import PagPagos from './pages/PagPagos';
 
 import Carrito from './pages/carrito'; //Pagina carrito
 
@@ -58,7 +60,8 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/detalle/:id" element={<DetallesDoc />} />
-
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/pagos" element={<PagPagos />} />
                 <Route path="/carrito" element={<Carrito />} />
 
                 {/* Rutas protegidas */}

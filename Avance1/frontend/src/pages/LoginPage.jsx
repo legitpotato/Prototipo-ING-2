@@ -65,6 +65,7 @@ function LoginPage() {
           >
             Iniciar Sesión
           </button>
+          <p className="text-sm text-center mt-2">¿Olvidaste tu contraseña?{" "}<Link to="/reset-password" className="text-sky-400 hover:underline">Recuperar contraseña</Link></p>
         </form>
 
         <p className="text-sm text-center">

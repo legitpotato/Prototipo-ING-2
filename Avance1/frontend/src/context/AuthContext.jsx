@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 // Crear el contexto
 export const AuthContext = createContext();
@@ -50,20 +51,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Iniciar sesión
+  
   const signin = async ({ email, password }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const token = await user.getIdToken();
 
-      setUser(user);
+      const res = await fetch("http://localhost:4000/api/perfil", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const userData = await res.json();
+      setUser(userData);
       setIsAuthenticated(true);
       setErrors([]);
     } catch (error) {
       handleError(error);
     }
   };
+
 
   // Cerrar sesión
   const logout = async () => {
@@ -105,6 +114,16 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  const resetPassword = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setErrors([]);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  
   return (
     <AuthContext.Provider
       value={{
@@ -115,6 +134,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         errors,
         loading,
+        resetPassword
       }}
     >
       {children}
