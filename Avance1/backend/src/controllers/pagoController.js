@@ -1,4 +1,7 @@
 import { crearPago, obtenerPagos, obtenerPagoPorId, obtenerPagosPorEstado } from '../../models/pagoModel.js';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function crearPagoController(req, res) {
   const {
@@ -7,7 +10,8 @@ export async function crearPagoController(req, res) {
     fecha_vencimiento,
     monto_original,
     interes_acumulado = 0,
-    cuenta_destino
+    cuenta_destino,
+    rut // <-- asegurarte que venga en el body para relacionar el pago con un usuario
   } = req.body;
 
   if (
@@ -16,7 +20,8 @@ export async function crearPagoController(req, res) {
     !fecha_vencimiento ||
     !monto_original ||
     interes_acumulado === undefined ||
-    !cuenta_destino
+    !cuenta_destino ||
+    !rut  // <--- validar también que venga el rut
   ) {
     return res.status(400).json({ error: 'Todos los campos son obligatorios' });
   }
@@ -31,7 +36,8 @@ export async function crearPagoController(req, res) {
       monto_original: parseFloat(monto_original),
       interes_acumulado: parseFloat(interes_acumulado),
       monto_total,
-      cuenta_destino
+      cuenta_destino,
+      rut // <--- agregar aquí para relacionar con el usuario
     });
 
     return res.status(201).json({
@@ -42,6 +48,7 @@ export async function crearPagoController(req, res) {
     return res.status(500).json({ error: 'Error al crear el pago', detalle: error.message });
   }
 }
+
 
 export async function obtenerPagosController(req, res) {
   try {
@@ -56,14 +63,18 @@ export async function obtenerPagoPorIdController(req, res) {
   const { id } = req.params;
   try {
     const pago = await obtenerPagoPorId(id);
+    console.log('🧾 Pago con usuario incluido:', pago); // <-- esto
+
     if (!pago) {
       return res.status(404).json({ error: 'Pago no encontrado' });
     }
+
     return res.status(200).json(pago);
   } catch (error) {
     return res.status(500).json({ error: 'Error al obtener el pago', detalle: error.message });
   }
 }
+
 
 export async function obtenerPagosPendientesController(req, res) {
   try {
@@ -82,3 +93,23 @@ export async function obtenerPagosPagadosController(req, res) {
     return res.status(500).json({ error: 'Error al obtener pagos pagados', detalle: error.message });
   }
 }
+
+export const marcarPagoComoPagadoController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const pagoActualizado = await prisma.pago.update({
+      where: { id: parseInt(id) },
+      data: {
+        estado: 'pagado',
+        updatedAt: new Date()
+      },
+    });
+
+    res.json(pagoActualizado);
+
+  } catch (error) {
+    console.error("Error al actualizar el pago:", error);  // 👈 importante
+    res.status(500).json({ mensaje: 'Error al actualizar el pago' });
+  }
+};

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PagoDetalle from './PagDetalles';
+import ComprobantePago from '../components/Comprobante.jsx';
 
 export default function PagPagos() {
   const [pagos, setPagos] = useState([]);
@@ -26,6 +27,35 @@ export default function PagPagos() {
     if (filtro === 'todos') return true;
     return pago.estado === filtro;
   });
+
+  const marcarPagoComoPagado = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:4000/api/pagos/${id}/pagar`, {
+      method: 'PATCH',
+    });
+
+    if (!res.ok) throw new Error('Error al actualizar el pago');
+
+    const pagoActualizado = await res.json();
+
+    // Actualiza la lista de pagos
+    setPagos(prevPagos =>
+      prevPagos.map(p =>
+        p.id === id ? { ...p, estado: pagoActualizado.estado } : p
+      )
+    );
+
+    // También actualiza el pago seleccionado si corresponde
+    setPagoSeleccionado(prev =>
+      prev && prev.id === id ? { ...prev, estado: pagoActualizado.estado } : prev
+    );
+
+    alert('¡Pago realizado con éxito!');
+  } catch (err) {
+    console.error(err);
+    alert('Hubo un error al intentar pagar');
+  }
+};
 
   return (
     <div className="p-5 text-black">
@@ -79,18 +109,19 @@ export default function PagPagos() {
             {pagoSeleccionado.estado === 'pendiente' && (
               <button
                 className="px-6 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold"
-                onClick={() => alert("Funcionalidad de pago pendiente")}
+                onClick={() => marcarPagoComoPagado(pagoSeleccionado.id)}
               >
                 Pagar
               </button>
             )}
             {pagoSeleccionado.estado === 'pagado' && (
-              <button
-                className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold"
-                onClick={() => alert("Descargando comprobante...")}
-              >
-                Descargar comprobante
-              </button>
+            console.log(pagoSeleccionado),
+            <button
+              onClick={() => ComprobantePago(pagoSeleccionado)}
+              className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+            >
+              Descargar comprobante
+            </button>
             )}
             <button
               onClick={() => setPagoSeleccionado(null)}

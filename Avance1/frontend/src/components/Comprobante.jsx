@@ -1,71 +1,71 @@
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-const Comprobante = (reserva) => {
+const ComprobantePago = (comprobante) => {
+  //console.log("ComprobantePago recibió:", comprobante);
+  //console.log("User dentro del comprobante:", comprobante.user);
+
   const doc = new jsPDF();
 
-  // Configuración del fondo gris claro
-  doc.setFillColor(200, 200, 200); // Gris claro
-  doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, "F"); // Llenar el fondo
+  // Fondo gris claro
+  doc.setFillColor(240, 240, 240);
+  doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, "F");
 
-  // Título "Comprobante de Reserva" centrado
+  // Título
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-  const title = "Comprobante de Reserva";
-  const titleWidth = doc.getTextWidth(title); // Ancho del texto
-  doc.text(title, (doc.internal.pageSize.width - titleWidth) / 2, 20); // Centrado
+  const title = "Comprobante de Pago";
+  const titleWidth = doc.getTextWidth(title);
+  doc.text(title, (doc.internal.pageSize.width - titleWidth) / 2, 20);
 
-  // Título "Biblioteca Estación Central" centrado
-  doc.setFontSize(16);
-  const libraryName = "Biblioteca Estación Central";
-  const libraryWidth = doc.getTextWidth(libraryName); // Ancho del texto
-  doc.text(libraryName, (doc.internal.pageSize.width - libraryWidth) / 2, 30); // Centrado
-
-  // Información del usuario y reserva (en negrita solo los títulos)
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "bold");
-  doc.text("Nombre del Usuario:", 20, 50);
-  doc.setFont("helvetica", "normal");
-  doc.text(reserva.usuario.nombre, 80, 50);
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Documento:", 20, 60);
-  doc.setFont("helvetica", "normal");
-  doc.text(reserva.documento.title, 80, 60);
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Código del Préstamo:", 20, 70);
-  doc.setFont("helvetica", "normal");
-  doc.text(reserva.codigo_pre, 80, 70); // Cambiado a codigo_pre
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Fecha de Inicio:", 20, 80);
-  doc.setFont("helvetica", "normal");
-  doc.text(reserva.fechaInicio, 80, 80);
-
-  doc.setFont("helvetica", "bold");
-  doc.text("Fecha de Devolución:", 20, 90);
-  doc.setFont("helvetica", "normal");
-  doc.text(reserva.fechaDevolucion, 80, 90);
-
-  // Mensaje "Importante"
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.text("Importante:", 20, 110);
-  doc.setFont("helvetica", "normal");
-  doc.text("No olvides devolver el documento en la fecha de devolución,", 20, 120);
-  doc.text("se generará una multa por cada día de atraso.", 20, 130);
-
-  // Pie de página "Gracias por su reserva" más grande
-  doc.setFont("helvetica", "bold");
+  // Subtítulo o nombre de la comunidad/empresa
   doc.setFontSize(14);
-  const footerText = "Gracias por su reserva.";
-  const footerWidth = doc.getTextWidth(footerText); // Ancho del texto
-  doc.text(footerText, (doc.internal.pageSize.width - footerWidth) / 2, 160); // Centrado
+  const companyName = "ComuniRed - Gestión de Pagos";
+  const companyWidth = doc.getTextWidth(companyName);
+  doc.text(companyName, (doc.internal.pageSize.width - companyWidth) / 2, 30);
 
-  // Guardar el PDF
-  doc.save(`comprobante_reserva_BEC:${reserva.codigo_pre}.pdf`); // Cambiado a codigo_pre
+  // Datos del pago - Etiquetas en negrita, datos normales
+  let y = 45;
+  const lineHeight = 10;
+
+  const writeLabelValue = (label, value) => {
+    doc.setFont("helvetica", "bold");
+    doc.text(`${label}:`, 20, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(String(value ?? ""), 70, y);
+    y += lineHeight;
+  };
+
+  // Formateador de moneda chilena
+  const formatoCLP = (num) =>
+    num !== undefined ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(num) : "";
+
+  writeLabelValue("RUT", comprobante.user?.rut ?? "");
+  writeLabelValue("Nombre", `${comprobante.user?.firstName ?? ""} ${comprobante.user?.lastName ?? ""}`.trim());
+  writeLabelValue("Descripción", comprobante.descripcion ?? "");
+  writeLabelValue("Monto Original", formatoCLP(comprobante.monto_original));
+  writeLabelValue("Interés Acumulado", formatoCLP(comprobante.interes_acumulado));
+  writeLabelValue("Monto Total", formatoCLP(comprobante.monto_total));
+
+  // Fecha y hora formateada
+  const fechaEmision = comprobante.fecha_emision ? new Date(comprobante.fecha_emision) : null;
+  writeLabelValue("Fecha y Hora", fechaEmision ? fechaEmision.toLocaleString() : "");
+
+  const fechaVencimiento = comprobante.fecha_vencimiento ? new Date(comprobante.fecha_vencimiento) : null;
+  writeLabelValue("Fecha Vencimiento", fechaVencimiento ? fechaVencimiento.toLocaleDateString() : "");
+
+  writeLabelValue("Cuenta Destino", comprobante.cuenta_destino ?? "");
+  writeLabelValue("Estado", comprobante.estado ?? "");
+
+  // Pie de página
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  const footerText = "Gracias por su pago. ¡ComuniRed te agradece!";
+  const footerWidth = doc.getTextWidth(footerText);
+  doc.text(footerText, (doc.internal.pageSize.width - footerWidth) / 2, y + 15);
+
+  // Guardar el PDF con nombre dinámico
+  doc.save(`comprobante_pago_${comprobante.id ?? "sin_id"}.pdf`);
 };
 
-// Exportación por defecto
-export default Comprobante;
+export default ComprobantePago;

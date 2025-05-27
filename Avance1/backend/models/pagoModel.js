@@ -6,14 +6,31 @@ export async function crearPago(data) {
 }
 
 export async function obtenerPagos() {
-  return await prisma.pago.findMany({
-    orderBy: { fecha_emision: 'desc' }
+  return prisma.pago.findMany({
+    include: {
+      user: {
+        select: {
+          rut: true,
+          firstName: true,
+          lastName: true
+        }
+      }
+    }
   });
 }
 
+
 export async function obtenerPagoPorId(id) {
-  return await prisma.pago.findUnique({
-    where: { id: parseInt(id) }
+  return prisma.pago.findUnique({
+    where: { id: parseInt(id) },
+    include: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true
+        }
+      }
+    }
   });
 }
 
