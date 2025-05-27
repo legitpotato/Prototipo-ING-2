@@ -3,7 +3,7 @@
 function Footer() {
     return (
         <footer 
-            className="w-full h-16 bg-blue-500 flex justify-between items-center px-5 mt-10"
+            className="w-full h-16 bg-[#0097b2] flex justify-between items-center px-5 mt-10"
         >
             {/* Sección de derechos de autor */}
             <p className="text-white">

@@ -4,11 +4,11 @@
 
 body {
   background: linear-gradient(
-    rgba(214, 206, 206, 0.363),
-    rgba(233, 227, 227, 0.959), 
-    rgba(214, 206, 206, 0.363)
+    rgba(248, 246, 246, 0.884),
+    rgba(250, 247, 241, 0.911), 
+    rgba(248, 246, 246, 0.884)
   )
-  ,url('../src/assets/fondoclaro.jpg');
+  ,url('../src/assets/fondoblanco.png');
   background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
   background-position: center; /* Centra la imagen */
   background-attachment: fixed; /* Hace que la imagen no se desplace al hacer scroll */

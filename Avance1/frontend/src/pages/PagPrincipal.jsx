@@ -1,42 +1,64 @@
-import React from 'react'; // Importa React para usar JSX
-import Carrusel from '../components/Carrusel'; // Importa el componente Carrusel
+import React from 'react';
+import Carrusel from '../components/Carrusel';
 
 function PagPrincipal() {
   return (
-    <div className="bg-cover bg-center min-h-screen"> {/* Aplica un fondo que cubre toda la pantalla */}
-      
-      <Carrusel/> {/* Renderiza el componente Carrusel que puede ser un carrusel de imágenes o contenido */}
+    <div className="min-h-screen">
+      {/* Banner superior con margen lateral */}
+      <div className="relative h-64">
+        {/* Imagen de fondo */}
+        <img
+          src="src/assets/Condominio.jpg"
+          alt="Foto banner"
+          className="w-full h-full object-cover rounded-lg opacity-80 mt-5"
+        />
 
-      <section className="flex flex-col items-center font-mono"> {/* Contenedor principal para los libros populares */}
-        <h2 className="text-4xl text-white font-bold">POPULARES ESTE MES</h2> {/* Título de la sección */}
-        
-        <div className="flex flex-wrap justify-center gap-8 mt-20"> {/* Contenedor de los libros populares con espacio entre ellos */}
-          
-          {/* Primer libro */}
-          <div className="bg-white bg-opacity-90 p-5 rounded-lg text-center shadow-lg max-w-xs font-mono transition-transform duration-300 hover:scale-105">
-            <img src="src/assets/tolkien.jpg" alt="La comunidad del Anillo" className="w-full h-96 object-cover rounded-md" /> {/* Imagen del libro */}
-            <h3 className="text-black text-xl font-bold mt-4">La comunidad del Anillo</h3> {/* Título del libro */}
-            <p className="text-gray-600">J.R.R. Tolkien</p> {/* Autor del libro */}
-          </div>
-
-          {/* Segundo libro */}
-          <div className="bg-white bg-opacity-90 p-5 rounded-lg text-center shadow-lg max-w-xs font-mono transition-transform duration-300 hover:scale-105">
-            <img src="src/assets/serway.jpg" alt="Serway Física" className="w-full h-96 object-cover rounded-md" /> {/* Imagen del libro */}
-            <h3 className="text-black text-xl font-bold mt-4">Serway Física</h3> {/* Título del libro */}
-            <p className="text-gray-600">Raymond A. Serway</p> {/* Autor del libro */}
-          </div>
-
-          {/* Tercer libro */}
-          <div className="bg-white bg-opacity-90 p-5 rounded-lg text-center shadow-lg max-w-xs font-mono transition-transform duration-300 hover:scale-105">
-            <img src="src/assets/mac.jpg" alt="Mac el microbio desconocido" className="w-full h-96 object-cover rounded-md" /> {/* Imagen del libro */}
-            <h3 className="text-black text-xl font-bold mt-4">Mac el microbio desconocido</h3> {/* Título del libro */}
-            <p className="text-gray-600">Hernán del Solar</p> {/* Autor del libro */}
-          </div>
-          
+        {/* Texto centrado */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="text-black text-4xl font-bold bg-white bg-opacity-70 px-6 py-3 rounded-lg">
+            Condominio Los Alerces
+          </h1>
         </div>
-      </section>
+      </div>
+
+      {/* Contenido principal */}
+      <div className="px-6">
+        <h2 className="text-4xl text-indigo-500 font-bold mt-12 font-mono">
+          Novedades
+        </h2>
+        <Carrusel />
+
+        {/* Sección de Notificaciones */}
+        <section className="mt-16 px-6">
+          <h2 className="text-4xl text-indigo-500 font-bold mt-12 font-mono mb-8">Últimas Notificaciones</h2>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white bg-opacity-90 rounded-lg shadow-md text-black font-medium">
+              <thead>
+                <tr className="bg-gray-200 text-left">
+                  <th className="py-3 px-4">#</th>
+                  <th className="py-3 px-4">Mensaje</th>
+                  <th className="py-3 px-4">Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-t border-gray-300 hover:bg-gray-100">
+                  <td className="py-2 px-4">1</td>
+                  <td className="py-2 px-4">Se actualizó la Incidencia N°23</td>
+                  <td className="py-2 px-4">27/05/2025</td>
+                </tr>
+                <tr className="border-t border-gray-300 hover:bg-gray-100">
+                  <td className="py-2 px-4">2</td>
+                  <td className="py-2 px-4">¡Tienes un pago pendiente!</td>
+                  <td className="py-2 px-4">26/05/2025</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </div>
-  )
+  );
 }
 
 export default PagPrincipal;

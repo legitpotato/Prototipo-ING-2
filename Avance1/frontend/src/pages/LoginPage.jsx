@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { FloatingInput } from '../components/TextoFlotante.jsx'
 
 function LoginPage() {
   const {
@@ -22,10 +23,19 @@ function LoginPage() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="flex h-[calc(100vh-100px)] items-center justify-center">
-      <div className="bg-zinc-800 max-w-md w-full p-10 rounded-md">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <div className="mt-8 p-10 border border-gray-300 rounded-lg max-w-md w-full bg-white shadow-md">
+        {/* Imagen y mensaje de bienvenida */}
+        <div className="flex flex-col items-center mb-6">
+          <img
+            src="\src\assets\logoComuniRed.png"
+            alt="Logo comunidad"
+            className="w-20 h-20 mb-2"
+          />
+          <h2 className="text-2xl font-bold text-zinc-600">¡Bienvenido vecino!</h2>
+        </div>
 
-        {/* Errores del backend */}
+        {/* Errores */}
         {signinErrors.length > 0 &&
           signinErrors.map((error, i) => (
             <div key={i} className="bg-red-500 p-2 text-white text-center my-2 rounded">
@@ -33,42 +43,38 @@ function LoginPage() {
             </div>
           ))}
 
-        <h1 className="text-3xl font-bold text-center mb-6">Inicia Sesión</h1>
+        <h1 className="text-3xl text-indigo-500 font-bold text-center mb-6">Iniciar Sesión</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-
-          {/* Correo */}
-          <input
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
+          <FloatingInput
+            label="Correo"
             type="email"
-            {...register('email', { required: 'El correo es requerido' })}
-            placeholder="Correo"
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            name="email"
+            register={register}
+            error={formErrors.email}
           />
-          {formErrors.email && (
-            <p className="text-red-400 text-sm">{formErrors.email.message}</p>
-          )}
 
-          {/* Contraseña */}
-          <input
+          <FloatingInput
+            label="Contraseña"
             type="password"
-            {...register('password', { required: 'La contraseña es requerida' })}
-            placeholder="Contraseña"
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+            name="password"
+            register={register}
+            error={formErrors.password}
           />
-          {formErrors.password && (
-            <p className="text-red-400 text-sm">{formErrors.password.message}</p>
-          )}
 
           <button
             type="submit"
-            className="w-full bg-sky-500 hover:bg-sky-600 transition-colors text-white px-4 py-2 rounded-md my-4"
+            className="bg-indigo-500 hover:bg-indigo-600 transition-colors text-white px-6 py-2 rounded-md mx-auto block"
           >
             Iniciar Sesión
           </button>
-          <p className="text-sm text-center mt-2">¿Olvidaste tu contraseña?{" "}<Link to="/reset-password" className="text-sky-400 hover:underline">Recuperar contraseña</Link></p>
+          <p className="text-sm text-center mt-2 text-black">
+            ¿Olvidaste tu contraseña?{" "}
+            <Link to="/reset-password" className="text-sky-400 hover:underline">Recuperar contraseña</Link>
+          </p>
         </form>
 
-        <p className="text-sm text-center">
+        <p className="text-sm text-center text-black mt-4">
           ¿No tienes una cuenta?{" "}
           <Link to="/register" className="text-sky-400 hover:underline">
             Regístrate

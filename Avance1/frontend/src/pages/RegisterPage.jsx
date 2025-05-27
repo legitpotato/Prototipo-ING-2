@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FloatingInput } from '../components/TextoFlotante.jsx'
 
 function RegisterPage() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -32,91 +33,97 @@ function RegisterPage() {
     });
 
     return (
-        <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
-            <div className='bg-zinc-800 max-w-md p-10 rounded-md'>
+    <div className='flex min-h-screen items-center justify-center py-11'>
+        <div className="mt-8 p-10 border border-gray-300 rounded-lg max-w-md w-full bg-white shadow-md"> 
                 {registerErrors.map((error, i) => (
                     <div className='bg-red-500 p-2 text-white' key={i}>
                         {error}
                     </div>
                 ))}
-                <h1 className='text-3xl font-bold my-2'>Regístrate en ComuniRed</h1>
+                <h1 className='text-3xl text-indigo-500 font-bold text-center mb-10 mt-2'>Regístrate en ComuniRed</h1>
 
-                <form onSubmit={onSubmit}>
+               <form onSubmit={onSubmit} className='space-y-8'>
+                <FloatingInput
+                    name="rut"
+                    type="text"
+                    label="RUT (sin puntos ni guión)"
+                    register={register}
+                    error={errors.rut}
+                    validation={{
+                    required: "Se requiere RUT",
+                    pattern: {
+                        value: /^[0-9kK]+$/,
+                        message: "El RUT debe contener solo números o la letra K, sin puntos ni guiones."
+                    }
+                    }}
+                />
 
-                    <input
-                        type="text"
-                        {...register("rut", {
-                            required: "Se requiere RUT",
-                            pattern: {
-                                value: /^[0-9kK]+$/,
-                                message: "El RUT debe contener solo números o la letra K, sin puntos ni guiones."
-                            }
-                        })}
-                        className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                        placeholder="RUT (sin puntos ni guión)"
-                    />
-                    {errors.rut && <p className="text-red-500">{errors.rut.message}</p>}
+                <FloatingInput
+                    name="nombre"
+                    type="text"
+                    label="Nombre"
+                    register={register}
+                    error={errors.nombre}
+                    validation={{ required: "Se requiere Nombre" }}
+                />
 
-                    <input
-                        type="text"
-                        {...register("nombre", { required: "Se requiere Nombre" })}
-                        className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                        placeholder="Nombre"
-                    />
-                    {errors.nombre && <p className="text-red-500">{errors.nombre.message}</p>}
+                <FloatingInput
+                    name="apellido"
+                    type="text"
+                    label="Apellido"
+                    register={register}
+                    error={errors.apellido}
+                    validation={{ required: "Se requiere Apellido" }}
+                />
 
-                    <input
-                        type="text"
-                        {...register("apellido", { required: "Se requiere Apellido" })}
-                        className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                        placeholder="Apellido"
-                    />
-                    {errors.apellido && <p className="text-red-500">{errors.apellido.message}</p>}
+                <FloatingInput
+                    name="fechaNacimiento"
+                    type="text"
+                    label="Fecha de Nacimiento (DD/MM/YYYY)"
+                    register={register}
+                    error={errors.fechaNacimiento}
+                    validation={{
+                    required: "Se requiere Fecha de Nacimiento",
+                    pattern: {
+                        value: /^(0[1-9]|[12][0-9]|3[01])[\/](0[1-9]|1[0-2])[\/]\d{4}$/,
+                        message: "Formato de fecha debe ser DD/MM/YYYY"
+                    }
+                    }}
+                />
 
-                    <input
-                        type="text"
-                        {...register("fechaNacimiento", {
-                            required: "Se requiere Fecha de Nacimiento",
-                            pattern: {
-                                value: /^(0[1-9]|[12][0-9]|3[01])[\/](0[1-9]|1[0-2])[\/]\d{4}$/,
-                                message: "Formato de fecha debe ser DD/MM/YYYY"
-                            }
-                        })}
-                        className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                        placeholder="Fecha de Nacimiento (DD/MM/YYYY)"
-                    />
-                    {errors.fechaNacimiento && <p className="text-red-500">{errors.fechaNacimiento.message}</p>}
+                <FloatingInput
+                    name="email"
+                    type="email"
+                    label="Correo Electrónico"
+                    register={register}
+                    error={errors.email}
+                    validation={{ required: "Se requiere Correo Electrónico" }}
+                />
 
-                    <input
-                        type="email"
-                        {...register("email", { required: "Se requiere Correo Electrónico" })}
-                        className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                        placeholder="Correo Electrónico"
-                    />
-                    {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+                <FloatingInput
+                    name="password"
+                    type="password"
+                    label="Contraseña"
+                    register={register}
+                    error={errors.password}
+                    validation={{
+                    required: "Se requiere Contraseña",
+                    pattern: {
+                        value: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                        message: "La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número."
+                    }
+                    }}
+                />
 
-                    <input
-                        type="password"
-                        {...register("password", {
-                            required: "Se requiere Contraseña",
-                            pattern: {
-                                value: /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                                message: "La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número."
-                            }
-                        })}
-                        className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
-                        placeholder="Contraseña"
-                    />
-                    {errors.password && <p className="text-red-500">{errors.password.message}</p>}
-
-                    <button
-                        type="submit"
-                        className='bg-sky-500 text-white px-4 py-2 rounded-md my-2'>
-                        Registrar
-                    </button>
+                <button
+                    type="submit"
+                    className='bg-indigo-500 hover:bg-indigo-600 transition-colors text-white px-6 py-2 rounded-md mx-auto block'>
+                    Registrar
+                </button>
                 </form>
 
-                <p className='flex gap-x-2 justify-between'>
+
+                <p className='mt-4 text-sm text-center text-black'>
                     ¿Ya tienes una cuenta?{" "}
                     <Link to="/login" className='text-sky-500'>Iniciar sesión</Link>
                 </p>

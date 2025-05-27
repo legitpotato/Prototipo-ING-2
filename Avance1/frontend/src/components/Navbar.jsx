@@ -6,7 +6,7 @@ function Navbar() {
     console.log(user);
 
     return (
-        <nav className="w-full h-20 bg-blue-500 flex justify-between items-center px-5">
+        <nav className="w-full h-20 bg-[#0097b2] flex justify-between items-center px-5">
             {/* Sección izquierda: Logo, título y botón de catálogo */}
             <div className="flex items-center"> 
                 <a href="/" className="flex items-center">
@@ -30,7 +30,7 @@ function Navbar() {
                         <li className="font-bold text-lg mr-8">
                             <Link 
                                 to="/perfil" 
-                                className="hover:underline hover:text-blue-500"
+                                className="hover:underline hover:text-black"
                             >
                                 ¡Bienvenido {user?.firstName}!
                             </Link>
@@ -52,10 +52,10 @@ function Navbar() {
                         <li>
                             <Link 
                                 to='/' 
-                                className="hover:underline hover:text-red-500 px-4 py-1 rounded-sm" 
+                                className="font-bold hover:underline hover:text-red-500 px-4 py-1 rounded-sm" 
                                 onClick={() => { logout(); }}
                             >
-                                Salir
+                                Cerrar Sesión
                             </Link>
                         </li>
                     </>
@@ -64,7 +64,7 @@ function Navbar() {
                         <li>
                             <Link 
                                 to='/login' 
-                                className="bg-zinc-500 hover:bg-zinc-600 px-4 py-1 rounded-sm"
+                                className="bg-zinc-400 hover:bg-zinc-500 px-4 py-1 rounded-sm"
                             >
                                 Iniciar Sesión
                             </Link>
@@ -72,7 +72,7 @@ function Navbar() {
                         <li>
                             <Link 
                                 to='/register' 
-                                className="bg-zinc-500 hover:bg-zinc-600 px-4 py-1 rounded-sm"
+                                className="bg-zinc-400 hover:bg-zinc-500 px-4 py-1 rounded-sm"
                             >
                                 Registrarse
                             </Link>

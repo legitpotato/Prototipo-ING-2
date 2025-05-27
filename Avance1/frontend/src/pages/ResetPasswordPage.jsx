@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
+import { FloatingInput } from '../components/TextoFlotante.jsx';
 
 function ResetPasswordPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -15,24 +16,39 @@ function ResetPasswordPage() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="bg-zinc-800 p-10 rounded-md max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-4 text-center">Recuperar Contraseña</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <input
-            type="email"
-            {...register("email", { required: "El correo es obligatorio" })}
-            placeholder="Correo electrónico"
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2"
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white shadow-md border border-gray-300 rounded-lg max-w-md w-full p-10">
+        {/* Encabezado */}
+        <div className="flex flex-col items-center mb-6">
+          <img
+            src="\src\assets\logoComuniRed.png"
+            alt="Logo comunidad"
+            className="w-20 h-20 mb-2"
           />
-          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+          <h2 className="text-2xl font-bold text-zinc-600">¿Olvidaste tu contraseña?</h2>
+        </div>
 
-          <button
-            type="submit"
-            className="w-full bg-sky-500 hover:bg-sky-600 transition-colors text-white px-4 py-2 rounded-md mt-4"
-          >
-            Enviar correo de recuperación
-          </button>
+        <h1 className="text-2xl text-indigo-500 font-bold text-center mb-8">
+          Recuperar Contraseña
+        </h1>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <FloatingInput
+            label="Correo electrónico"
+            type="email"
+            name="email"
+            register={register}
+            error={errors.email}
+            validation={{ required: "El correo es obligatorio" }}
+          />
+
+        <button
+          type="submit"
+          className="bg-indigo-500 hover:bg-indigo-600 transition-colors text-white px-6 py-2 rounded-md mx-auto block"
+        >
+          Enviar correo
+        </button>
+
         </form>
       </div>
     </div>
