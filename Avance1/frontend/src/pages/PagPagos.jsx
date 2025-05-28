@@ -56,6 +56,7 @@ export default function PagPagos() {
     alert('Hubo un error al intentar pagar');
   }
 };
+  const formatearFecha = (fecha) => {
     if (!fecha) return 'N/A';
     const date = new Date(fecha);
     const dia = String(date.getDate()).padStart(2, '0');
