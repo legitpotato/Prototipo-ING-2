@@ -7,7 +7,7 @@ export default function PagPagos() {
   const [filtro, setFiltro] = useState('todos');
   const [pagoSeleccionado, setPagoSeleccionado] = useState(null);
 
-  useEffect(() => {
+ useEffect(() => {
     fetch('http://localhost:4000/api/pagos')
       .then(res => {
         if (!res.ok) throw new Error(`Error en la API: ${res.status}`);
@@ -56,6 +56,13 @@ export default function PagPagos() {
     alert('Hubo un error al intentar pagar');
   }
 };
+    if (!fecha) return 'N/A';
+    const date = new Date(fecha);
+    const dia = String(date.getDate()).padStart(2, '0');
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    const anio = date.getFullYear();
+    return `${dia}/${mes}/${anio}`;
+  };
 
   return (
     <div className="p-5 text-black">
@@ -82,6 +89,8 @@ export default function PagPagos() {
               <tr className="bg-gray-200">
                 <th className="border px-4 py-3 text-left">Descripción</th>
                 <th className="border px-4 py-3 text-left">Estado</th>
+                <th className="border px-4 py-3 text-left">Fecha Creación</th>
+                <th className="border px-4 py-3 text-left">Fecha Vencimiento</th>
               </tr>
             </thead>
             <tbody>
@@ -93,6 +102,8 @@ export default function PagPagos() {
                 >
                   <td className="border px-4 py-2">{pago.descripcion}</td>
                   <td className="border px-4 py-2">{pago.estado}</td>
+                  <td className="border px-4 py-2">{formatearFecha(pago.fecha_emision)}</td>
+                  <td className="border px-4 py-2">{formatearFecha(pago.fecha_vencimiento)}</td>
                 </tr>
               ))}
             </tbody>
