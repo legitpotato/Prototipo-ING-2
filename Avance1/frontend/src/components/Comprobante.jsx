@@ -40,16 +40,20 @@ const ComprobantePago = (comprobante) => {
   const formatoCLP = (num) =>
     num !== undefined ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(num) : "";
 
-  writeLabelValue("RUT", comprobante.user?.rut ?? "");
-  writeLabelValue("Nombre", `${comprobante.user?.firstName ?? ""} ${comprobante.user?.lastName ?? ""}`.trim());
+  writeLabelValue("RUT", comprobante.rut ?? "");
+  writeLabelValue("Nombre", `${comprobante.firstName ?? ""} ${comprobante.lastName ?? ""}`.trim());
   writeLabelValue("Descripción", comprobante.descripcion ?? "");
   writeLabelValue("Monto Original", formatoCLP(comprobante.monto_original));
   writeLabelValue("Interés Acumulado", formatoCLP(comprobante.interes_acumulado));
   writeLabelValue("Monto Total", formatoCLP(comprobante.monto_total));
 
   // Fecha y hora formateada
-  const fechaEmision = comprobante.fecha_emision ? new Date(comprobante.fecha_emision) : null;
-  writeLabelValue("Fecha y Hora", fechaEmision ? fechaEmision.toLocaleString() : "");
+  const fechaPago = comprobante.fechaPago
+    ? new Date(comprobante.fechaPago)
+    : (comprobante.fecha_emision ? new Date(comprobante.fecha_emision) : new Date());
+
+  writeLabelValue("Fecha y Hora", fechaPago.toLocaleString());
+
 
   const fechaVencimiento = comprobante.fecha_vencimiento ? new Date(comprobante.fecha_vencimiento) : null;
   writeLabelValue("Fecha Vencimiento", fechaVencimiento ? fechaVencimiento.toLocaleDateString() : "");

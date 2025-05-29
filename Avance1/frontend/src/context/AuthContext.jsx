@@ -1,12 +1,15 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail
+} from "firebase/auth";
 import { auth } from "../firebase";
-import { sendPasswordResetEmail } from "firebase/auth";
 
-// Crear el contexto
 export const AuthContext = createContext();
 
-// Hook para usar el contexto
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -15,73 +18,13 @@ export const useAuth = () => {
   return context;
 };
 
-// Proveedor del contexto
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // Datos desde backend
+  const [firebaseUser, setFirebaseUser] = useState(null); // Usuario Firebase
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Registrar nuevo usuario
-  const signup = async ({ email, password }, additionalData) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const token = await user.getIdToken();
-
-      const res = await fetch("http://localhost:4000/api/usuarios", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          uid: user.uid,
-          email: user.email,
-          ...additionalData
-        })
-      });
-
-      const userData = await res.json();
-      setUser(userData);
-      setIsAuthenticated(true);
-      setErrors([]);
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  
-  const signin = async ({ email, password }) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const token = await user.getIdToken();
-
-      const res = await fetch("http://localhost:4000/api/perfil", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const userData = await res.json();
-      setUser(userData);
-      setIsAuthenticated(true);
-      setErrors([]);
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-
-  // Cerrar sesión
-  const logout = async () => {
-    await signOut(auth);
-    setUser(null);
-    setIsAuthenticated(false);
-  };
-
-  // Manejo de errores
   const handleError = (error) => {
     if (error.code) {
       setErrors([error.message]);
@@ -90,29 +33,63 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Limpieza automática de errores después de 5 segundos
-  useEffect(() => {
-    if (errors.length > 0) {
-      const timer = setTimeout(() => setErrors([]), 5000);
-      return () => clearTimeout(timer);
+  const signup = async ({ email, password }, additionalData) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const fUser = userCredential.user;
+      const token = await fUser.getIdToken();
+
+      const res = await fetch("http://localhost:4000/api/usuarios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          uid: fUser.uid,
+          email: fUser.email,
+          ...additionalData,
+        }),
+      });
+
+      const userData = await res.json();
+      setFirebaseUser(fUser);
+      setUser(userData);
+      setIsAuthenticated(true);
+      setErrors([]);
+    } catch (error) {
+      handleError(error);
     }
-  }, [errors]);
+  };
 
-  // Verifica el estado de autenticación al montar
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        setIsAuthenticated(true);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
-      }
-      setLoading(false);
-    });
+  const signin = async ({ email, password }) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const fUser = userCredential.user;
+      const token = await fUser.getIdToken();
 
-    return () => unsubscribe();
-  }, []);
+      const res = await fetch("http://localhost:4000/api/perfil", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const userData = await res.json();
+      setFirebaseUser(fUser);
+      setUser(userData);
+      setIsAuthenticated(true);
+      setErrors([]);
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+    setFirebaseUser(null);
+    setUser(null);
+    setIsAuthenticated(false);
+  };
 
   const resetPassword = async (email) => {
     try {
@@ -123,11 +100,53 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  
+  useEffect(() => {
+    if (errors.length > 0) {
+      const timer = setTimeout(() => setErrors([]), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (fUser) => {
+      if (fUser) {
+        try {
+          const token = await fUser.getIdToken();
+
+          const res = await fetch("http://localhost:4000/api/perfil", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!res.ok) throw new Error("Error al obtener perfil");
+
+          const userData = await res.json();
+          setFirebaseUser(fUser);
+          setUser(userData);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error("Error cargando perfil en onAuthStateChanged:", error);
+          setFirebaseUser(null);
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } else {
+        setFirebaseUser(null);
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user, // datos backend
+        firebaseUser, // objeto Firebase con getIdToken()
         signup,
         signin,
         logout,

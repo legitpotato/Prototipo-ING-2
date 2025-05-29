@@ -9,6 +9,9 @@ import LoginPage from './pages/LoginPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import PagPagos from './pages/PagPagos';
 import Usuarios from './pages/Usuarios';
+import AdminRoute from "./AdminRoute";
+import PagPagosDirectiva from "./pages/PagPagosDirectiva";
+
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -34,6 +37,15 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Principal />} />
               </Route>
+
+              <Route
+          path="/admin/pagos"
+          element={
+            <AdminRoute>
+              <PagPagosDirectiva />
+            </AdminRoute>
+          }
+        />
 
               {/* Ruta para residentes */}
               <Route path="/pagos" element={<ProtectedRoute requiredRole={['admin', 'vecino']} />}>

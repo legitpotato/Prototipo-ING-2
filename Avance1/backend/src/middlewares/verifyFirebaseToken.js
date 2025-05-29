@@ -5,6 +5,8 @@ const verifyFirebaseToken = async (req, res, next) => {
   if (!authHeader) return res.status(401).json({ message: 'Token no proporcionado' });
 
   const token = authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Token mal formado' });
+
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
     req.firebaseUser = decodedToken;
@@ -15,4 +17,4 @@ const verifyFirebaseToken = async (req, res, next) => {
   }
 };
 
-export {verifyFirebaseToken};
+export { verifyFirebaseToken };

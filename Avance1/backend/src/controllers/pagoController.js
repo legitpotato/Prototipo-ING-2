@@ -52,9 +52,26 @@ export async function crearPagoController(req, res) {
 
 export async function obtenerPagosController(req, res) {
   try {
-    const pagos = await obtenerPagos();
+    const firebaseUid = req.firebaseUser.uid;
+
+    // Buscar el usuario por su UID de Firebase
+    const usuario = await prisma.user.findUnique({
+      where: { uid: firebaseUid },
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado en la base de datos' });
+    }
+
+    // Filtrar pagos por el rut del usuario autenticado
+    const pagos = await prisma.pago.findMany({
+      where: { rut: usuario.rut },
+      orderBy: { fecha_emision: 'desc' },
+    });
+
     return res.status(200).json(pagos);
   } catch (error) {
+    console.error('Error al obtener los pagos:', error);
     return res.status(500).json({ error: 'Error al obtener los pagos', detalle: error.message });
   }
 }
@@ -111,5 +128,29 @@ export const marcarPagoComoPagadoController = async (req, res) => {
   } catch (error) {
     console.error("Error al actualizar el pago:", error);  // 👈 importante
     res.status(500).json({ mensaje: 'Error al actualizar el pago' });
+  }
+};
+
+export const obtenerTodoPagosController = async (req, res) => {
+  try {
+    const pagos = await prisma.pago.findMany({
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true
+          }
+        }
+      },
+      orderBy: {
+        fecha_emision: 'desc'
+      }
+    });
+
+    res.json(pagos);
+  } catch (error) {
+    console.error('Error al obtener todos los pagos:', error);
+    res.status(500).json({ error: 'Error al obtener los pagos' });
   }
 };
