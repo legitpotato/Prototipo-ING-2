@@ -145,7 +145,14 @@ export default function MorosidadPage() {
                     return;
                   }
 
-                  const token = await user.getIdToken();
+                  const firebaseUser = getAuth().currentUser;
+                  if (!firebaseUser) {
+                    console.warn('Usuario no autenticado');
+                    navigate('/login');
+                    return;
+                  }
+                  const token = await firebaseUser.getIdToken();
+
 
                   const res = await fetch(`/api/morosidad/por-rut/${filtroRut}`, {
                     headers: {
