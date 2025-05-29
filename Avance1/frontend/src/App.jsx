@@ -12,6 +12,7 @@ import Usuarios from './pages/Usuarios';
 import AdminRoute from "./AdminRoute";
 import PagPagosDirectiva from "./pages/PagPagosDirectiva";
 import PagosTodosPage from './pages/PagosTodosPage';
+import MorosidadPage from './pages/morosidadPage';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -36,6 +37,7 @@ function App() {
               {/* Ruta accesible por cualquier usuario autenticado */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Principal />} />
+                <Route path="/morosidad" element={<MorosidadPage />} />
               </Route>
 
               <Route path="/admin/pagos" element={<AdminRoute><PagPagosDirectiva /></AdminRoute>}/>
