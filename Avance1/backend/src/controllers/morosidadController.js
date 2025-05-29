@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { generarAnalisis } from '../../libs/gemini.js';
+import { generarAnalisis } from '../../libs/cohere.js';
 
 const prisma = new PrismaClient();
 
@@ -52,17 +52,87 @@ export async function analizarMorosidad(req, res) {
   }
 }
 
-
 export async function analizarMorosidadIA(req, res) {
-  const pagos = await prisma.pago.findMany({ where: { estado: 'pendiente' }, include: { user: true } });
+  try {
+    const pagos = await prisma.pago.findMany({
+      where: { estado: 'pendiente' },
+      include: { user: true },
+    });
 
-  const resumen = pagos.map(p => (
-    `Residente: ${p.user.firstName} ${p.user.lastName}, RUT: ${p.user.rut}, Monto: $${p.monto_original}, Vencimiento: ${p.fecha_vencimiento}`
-  )).join('\n');
+    const resumen = pagos.map(p => {
+      const fechaVenc = new Date(p.fecha_vencimiento);
+      const hoy = new Date();
+      const diasAtraso = Math.floor((hoy - fechaVenc) / (1000 * 60 * 60 * 24));
+      const interesDiario = 0.001;
+      const interesAcumulado = diasAtraso > 0 ? p.monto_original * interesDiario * diasAtraso : 0;
+      const montoTotal = p.monto_original + interesAcumulado;
+      const riesgo = diasAtraso <= 30 ? 'leve' : diasAtraso <= 90 ? 'moderado' : 'grave';
 
-  const prompt = `Analiza la siguiente lista de residentes morosos y sugiere acciones para la directiva:\n${resumen}`;
+      return `Residente: ${p.user.firstName} ${p.user.lastName}, RUT: ${p.user.rut}, Monto original: $${p.monto_original}, Interés acumulado: $${interesAcumulado.toFixed(2)}, Monto total: $${montoTotal.toFixed(2)}, Fecha de vencimiento: ${p.fecha_vencimiento}, Días de atraso: ${diasAtraso}, Riesgo: ${riesgo}`;
+    }).join('\n');
 
-  const respuestaIA = await generarAnalisis(prompt);
+    const prompt = `Analiza el historial de pagos del siguiente residente y determina la probabilidad de que se conviertan en moroso. Considera el monto total adeudado, los días de atraso y el comportamiento general de pagos. Con base en esto, sugiere si se debe conceder la oportunidad de repactación o si se deben tomar medidas legales. El análisis debe ser conciso y directo:\n\n${resumen}`;
 
-  res.json({ resumen, sugerencia: respuestaIA });
+    const sugerencia = await generarAnalisis(prompt);
+
+    res.json({ resumen, sugerencia });
+  } catch (error) {
+    console.error('Error al generar análisis con Cohere:', error);
+    res.status(500).json({ error: 'Error al generar análisis con IA' });
+  }
 }
+
+export async function analizarMorosidadPorRut(req, res) {
+  const { rut } = req.params;
+
+  try {
+    const pagos = await prisma.pago.findMany({
+      where: {
+        estado: 'pendiente',
+        user: { rut },
+      },
+      include: { user: true },
+    });
+
+    if (pagos.length === 0) {
+      return res.status(404).json({ mensaje: 'No se encontraron pagos pendientes para este RUT.' });
+    }
+
+    const resumen = pagos.map(p => {
+      const fechaVenc = new Date(p.fecha_vencimiento);
+      const hoy = new Date();
+      const diasAtraso = Math.floor((hoy - fechaVenc) / (1000 * 60 * 60 * 24));
+      const interesDiario = 0.001;
+      const interesAcumulado = diasAtraso > 0 ? p.monto_original * interesDiario * diasAtraso : 0;
+      const montoTotal = p.monto_original + interesAcumulado;
+      const riesgo = diasAtraso <= 30 ? 'leve' : diasAtraso <= 90 ? 'moderado' : 'grave';
+
+      return `Monto original: $${p.monto_original}, Interés acumulado: $${interesAcumulado.toFixed(2)}, Monto total: $${montoTotal.toFixed(2)}, Fecha de vencimiento: ${p.fecha_vencimiento}, Días de atraso: ${diasAtraso}, Riesgo: ${riesgo}`;
+    }).join('\n');
+
+    const nombre = `${pagos[0].user.firstName} ${pagos[0].user.lastName}`;
+    
+    const prompt = `
+    Considera que una junta de vecinos desea analizar el comportamiento de los pagos de un vecino. Estas deudas se refieren a gastos comunes y otros varios que se pueden dar en el espacio de una vecindad.
+    Analiza el historial de pagos del residente ${nombre} (RUT: ${rut}) con base en los siguientes datos:
+
+    ${resumen}
+
+    1. Evalúa el comportamiento de pago del residente.
+    2. Calcula el riesgo general de morosidad (leve, moderado, grave).
+    3. Sugiere una acción concreta: ¿repactación, advertencia o acción legal?
+    4. Determina la probablidad de que el residente se convierta en moroso, lo siga siendo o no.
+    5. Justifica brevemente tu sugerencia.
+
+    El análisis debe ser claro, directo y no mayor a 180 palabras.
+    `;
+
+    const sugerencia = await generarAnalisis(prompt);
+
+    res.json({ resumen, sugerencia });
+  } catch (error) {
+    console.error('Error al analizar morosidad por RUT:', error);
+    res.status(500).json({ error: 'Error interno al generar análisis por RUT' });
+  }
+}
+

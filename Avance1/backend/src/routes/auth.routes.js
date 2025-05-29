@@ -1,3 +1,8 @@
+// OBSOLETO
+
+
+
+
 // Importa las dependencias necesarias
 import { Router } from "express";  // Router de Express para manejar las rutas
 import { login, register, logout, profile, verifyToken, deleteUser, deleteLastUser, updateUser } from "../controllers/auth.controller.js"; // Controladores que gestionan las operaciones relacionadas con la autenticación de usuarios
