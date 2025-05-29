@@ -149,8 +149,32 @@ export const obtenerTodoPagosController = async (req, res) => {
     });
 
     res.json(pagos);
+    } catch (error) {
+      console.error('Error al obtener todos los pagos:', error);
+      res.status(500).json({ error: 'Error al obtener los pagos', detalle: error.message });
+    }
+};
+
+export const obtenerTodosLosPagosController = async (req, res) => {
+  try {
+    const pagos = await prisma.pago.findMany({
+      include: {
+        user: {
+          select: {
+            rut: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+      orderBy: {
+        fecha_emision: 'desc',
+      },
+    });
+
+    res.status(200).json(pagos);
   } catch (error) {
     console.error('Error al obtener todos los pagos:', error);
-    res.status(500).json({ error: 'Error al obtener los pagos' });
+    res.status(500).json({ error: 'Error al obtener los pagos', detalle: error.message });
   }
 };

@@ -11,7 +11,7 @@ import PagPagos from './pages/PagPagos';
 import Usuarios from './pages/Usuarios';
 import AdminRoute from "./AdminRoute";
 import PagPagosDirectiva from "./pages/PagPagosDirectiva";
-
+import PagosTodosPage from './pages/PagosTodosPage';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -38,14 +38,7 @@ function App() {
                 <Route path="/" element={<Principal />} />
               </Route>
 
-              <Route
-          path="/admin/pagos"
-          element={
-            <AdminRoute>
-              <PagPagosDirectiva />
-            </AdminRoute>
-          }
-        />
+              <Route path="/admin/pagos" element={<AdminRoute><PagPagosDirectiva /></AdminRoute>}/>
 
               {/* Ruta para residentes */}
               <Route path="/pagos" element={<ProtectedRoute requiredRole={['admin', 'vecino']} />}>
@@ -55,6 +48,9 @@ function App() {
               {/* Ruta para directiva */}
               <Route element={<ProtectedRoute requiredRole="admin" />}>
                 <Route path="/usuarios" element={<Usuarios />} />
+              </Route>
+              <Route element={<ProtectedRoute requiredRole="admin" />}>
+              <Route path="/pagos/todos" element={<PagosTodosPage />} />
               </Route>
             </Routes>
           </main>

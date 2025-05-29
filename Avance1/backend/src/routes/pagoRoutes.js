@@ -6,20 +6,21 @@ import {
   obtenerPagosPendientesController,
   obtenerPagosPagadosController,
   marcarPagoComoPagadoController,
-  obtenerTodoPagosController 
+  obtenerTodosLosPagosController // asegúrate de que esté importado con este nombre
 } from '../controllers/pagoController.js';
 
-import { verifyFirebaseToken } from '../middlewares/verifyFirebaseToken.js'; // 👈 importa el middleware
+import { verifyFirebaseToken } from '../middlewares/verifyFirebaseToken.js';
 
 const router = express.Router();
 
-// Aplica el middleware SOLO a rutas que deben estar protegidas
-router.patch('/pagos/:id/pagar', verifyFirebaseToken, marcarPagoComoPagadoController);
+// ✅ Rutas más específicas primero
+router.get('/pagos/todos', verifyFirebaseToken, obtenerTodosLosPagosController);
 router.get('/pagos/pendientes', verifyFirebaseToken, obtenerPagosPendientesController);
 router.get('/pagos/pagados', verifyFirebaseToken, obtenerPagosPagadosController);
-router.get('/pagos/:id', verifyFirebaseToken, obtenerPagoPorIdController);
-router.get('/pagos', verifyFirebaseToken, obtenerPagosController); // 👈 protegido
-router.post('/pagos', verifyFirebaseToken, crearPagoController);   // opcionalmente protegido
-router.get('/pagos/todos', verifyFirebaseToken, obtenerTodoPagosController);
+router.get('/pagos', verifyFirebaseToken, obtenerPagosController);
+router.post('/pagos', verifyFirebaseToken, crearPagoController);
+router.patch('/pagos/:id/pagar', verifyFirebaseToken, marcarPagoComoPagadoController);
+router.get('/pagos/:id', verifyFirebaseToken, obtenerPagoPorIdController); // esta va al final
+
 
 export default router;
