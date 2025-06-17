@@ -32,6 +32,7 @@ export default function PagPagos() {
         if (!res.ok) throw new Error(`Error en la API: ${res.status}`);
         
         const data = await res.json();
+        console.log('Pagos recibidos:', data);
 
         if (Array.isArray(data)) setPagos(data);
         else {
@@ -99,11 +100,8 @@ export default function PagPagos() {
 
   const formatearFecha = (fecha) => {
     if (!fecha) return 'N/A';
-    const date = new Date(fecha);
-    const dia = String(date.getDate()).padStart(2, '0');
-    const mes = String(date.getMonth() + 1).padStart(2, '0');
-    const anio = date.getFullYear();
-    return `${dia}/${mes}/${anio}`;
+    const [año, mes, dia] = fecha.split('T')[0].split('-');
+    return `${dia}/${mes}/${año}`;
   };
 
   return (

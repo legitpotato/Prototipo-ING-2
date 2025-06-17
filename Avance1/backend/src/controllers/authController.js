@@ -14,6 +14,12 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
+    // Validar formato del RUT
+    const rutRegex = /^[0-9]+[kK]?$/;
+    if (!rutRegex.test(rut)) {
+      return res.status(400).json({ message: 'Formato de RUT inválido. Usa solo números y una K/k al final si corresponde.' });
+    }
+
     // Verificar si el email o rut ya existen
     const existingUser = await prisma.user.findFirst({
       where: {

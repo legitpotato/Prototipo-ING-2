@@ -40,5 +40,28 @@ router.post('/usuarios', verifyFirebaseToken, async (req, res) => {
   console.log("Usuario Firebase:", req.firebaseUser);
 });
 
+// Ruta GET para verificar si existe un usuario por RUT
+router.get('/usuarios/verificar/:rut', async (req, res) => {
+  const { rut } = req.params;
+
+  if (!rut) {
+    return res.status(400).json({ message: 'Debe proporcionar el RUT' });
+  }
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: { rut },
+    });
+
+    if (user) {
+      return res.status(200).json({ exists: true, user });
+    } else {
+      return res.status(404).json({ exists: false });
+    }
+  } catch (error) {
+    console.error('Error al verificar usuario por RUT:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
 
 export default router;

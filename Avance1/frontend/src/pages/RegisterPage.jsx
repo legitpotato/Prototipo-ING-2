@@ -44,18 +44,18 @@ function RegisterPage() {
 
                <form onSubmit={onSubmit} className='space-y-8'>
                 <FloatingInput
-                    name="rut"
-                    type="text"
-                    label="RUT (sin puntos ni guión)"
-                    register={register}
-                    error={errors.rut}
-                    validation={{
+                name="rut"
+                type="text"
+                label="RUT (sin puntos ni guión)"
+                register={register}
+                error={errors.rut}
+                validation={{
                     required: "Se requiere RUT",
                     pattern: {
-                        value: /^[0-9kK]+$/,
-                        message: "El RUT debe contener solo números o la letra K, sin puntos ni guiones."
+                    value: /^[0-9]{1,8}[kK]?$/,
+                    message: "RUT inválido. Solo números y una K/k al final, sin puntos ni guiones."
                     }
-                    }}
+                }}
                 />
 
                 <FloatingInput

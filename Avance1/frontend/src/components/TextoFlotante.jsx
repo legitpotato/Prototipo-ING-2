@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export function FloatingInput({ label, name, type, register, error }) {
+export function FloatingInput({ label, name, type, register, error, validation }) {
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(false);
 
@@ -10,23 +10,29 @@ export function FloatingInput({ label, name, type, register, error }) {
         id={name}
         type={type}
         {...register(name, {
-          required: `${label} es requerido`,
+          ...validation,
           onChange: (e) => setHasValue(e.target.value !== ''),
         })}
+        onInput={(e) => {
+          if (name === 'rut') {
+            e.target.value = e.target.value.replace(/[^0-9kK]/g, '').toUpperCase();
+          }
+        }}
+
         onFocus={() => setIsFocused(true)}
         onBlur={(e) => {
           setIsFocused(false);
           setHasValue(e.target.value !== '');
         }}
-        placeholder=" "  // <-- placeholder vacío para reservar espacio sin mostrar texto
+        placeholder=" "
         className="w-full bg-zinc-300 text-black placeholder-transparent px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
       />
       <label
         htmlFor={name}
         className={`absolute left-4 transition-all duration-200 cursor-text ${
           isFocused || hasValue
-            ? 'text-base -top-7 text-purple-600'  // label arriba y morado
-            : 'top-3 text-sm text-black'         // label dentro y negro
+            ? 'text-base -top-7 text-purple-600'
+            : 'top-3 text-sm text-black'
         }`}
       >
         {label}

@@ -18,6 +18,8 @@ import GestionUsuariosPage from './pages/GestionUsuariosPage';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import PagIncidencia from './pages/PagIncidencia';
+import PagResIncidencia from './pages/PagResIncidencia';
 
 function App() {
   return (
@@ -37,13 +39,15 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-                {/* Ruta accesible por cualquier usuario autenticado */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/" element={<Principal />} />
-                  <Route path="/morosidad" element={<MorosidadPage />} />
-                </Route>
+              {/* Ruta accesible por cualquier usuario autenticado */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Principal />} />
+                <Route path="/resincidencia" element={<PagResIncidencia />} />
+              </Route>
 
-                <Route path="/admin/pagos" element={<AdminRoute><PagPagosDirectiva /></AdminRoute>} />
+              <Route path="/admin/pagos" element={<AdminRoute><PagosTodosPage /></AdminRoute>}/>
+              <Route path="/admin/incidencia" element={<AdminRoute><PagIncidencia /></AdminRoute>}/>
+              <Route path="/admin/morosidad" element={<AdminRoute><MorosidadPage /></AdminRoute>}/>
 
                 {/* Ruta para residentes */}
                 <Route path="/pagos" element={<ProtectedRoute requiredRole={['admin', 'vecino']} />}>
