@@ -19,6 +19,7 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   pagos     Pago[]  @relation("UserToPago")
+  comunidades UsuarioComunidad[]
 }
 
 model Pago {
@@ -35,4 +36,46 @@ model Pago {
   updatedAt        DateTime @updatedAt
   rut               String
   user              User     @relation("UserToPago", fields: [rut], references: [rut])
+  comunidadId   Int
+  comunidad     Comunidad @relation(fields: [comunidadId], references: [id])
+}
+
+model Comunidad {
+  id           Int                  @id @default(autoincrement())
+  nombre       String
+  direccion    String
+  descripcion  String?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  usuarios     UsuarioComunidad[]
+  pagos        Pago[]
+}
+
+model UsuarioComunidad {
+  id           Int                  @id @default(autoincrement())
+  userId       Int
+  comunidadId  Int
+  rol          RolUsuario
+  estado       EstadoMiembro       @default(ACTIVO)
+  fechaUnion   DateTime            @default(now())
+
+  user         User                @relation(fields: [userId], references: [id])
+  comunidad    Comunidad           @relation(fields: [comunidadId], references: [id])
+
+  @@unique([userId, comunidadId], name: "userId_comunidadId")
+
+}
+
+enum RolUsuario {
+  VECINO
+  DIRECTIVA
+  CONSERJE
+  ADMIN
+}
+
+enum EstadoMiembro {
+  ACTIVO
+  INACTIVO
+  PENDIENTE
 }

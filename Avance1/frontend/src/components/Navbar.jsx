@@ -1,9 +1,34 @@
 import { Link } from "react-router-dom"; 
 import { useAuth } from "../context/AuthContext"; 
 import { useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useComunidad } from "../context/ComunidadContext";
 
 function Navbar() {
     const { isAuthenticated, logout, user } = useAuth(); 
+    const { comunidades, comunidadActiva, setComunidadActiva } = useComunidad();
+
+
+    useEffect(() => {
+    const auth = getAuth();
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (user) {
+        const token = await user.getIdToken();
+        console.log("🔐 Firebase Token:", token);
+        } else {
+        console.log("⚠️ No hay usuario autenticado.");
+        }
+    });
+
+  return () => unsubscribe();
+}, []);
+
+
+useEffect(() => {
+  console.log("Comunidad activa:", comunidadActiva);
+}, [comunidadActiva]);
+
 
     useEffect(() => {
         console.log("Usuario actualizado:", user);
@@ -57,6 +82,36 @@ function Navbar() {
                                     Panel de Administración
                                 </Link>
                             </li>
+                        )}
+
+                        {comunidadActiva?.rol === 'DIRECTIVA' && (
+                        <li className="mr-4">
+                            <Link
+                            to="/usuarios/gestionar"
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-sm"
+                            >
+                            Gestionar Usuarios
+                            </Link>
+                        </li>
+                        )}
+
+                        {comunidades.length > 1 && (
+                        <li className="mr-4">
+                            <select
+                            value={comunidadActiva?.id || ''}
+                            onChange={(e) => {
+                                const seleccionada = comunidades.find(c => c.id === e.target.value);
+                                setComunidadActiva(seleccionada);
+                            }}
+                            className="bg-white text-black px-2 py-1 rounded"
+                            >
+                            {comunidades.map((comunidad) => (
+                                <option key={comunidad.id} value={comunidad.id}>
+                                {comunidad.nombre}
+                                </option>
+                            ))}
+                            </select>
+                        </li>
                         )}
 
                         <li>

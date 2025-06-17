@@ -1,7 +1,9 @@
 import React from 'react';
 import Carrusel from '../components/Carrusel';
+import { useComunidad } from '../context/ComunidadContext';
 
 function PagPrincipal() {
+  const { comunidadActiva } = useComunidad();
   return (
     <div className="min-h-screen">
       {/* Banner superior con margen lateral */}
@@ -16,7 +18,7 @@ function PagPrincipal() {
         {/* Texto centrado */}
         <div className="absolute inset-0 flex items-center justify-center">
           <h1 className="text-black text-4xl font-bold bg-white bg-opacity-70 px-6 py-3 rounded-lg">
-            Condominio Los Alerces
+            {comunidadActiva?.nombre || 'Mi Comunidad'}
           </h1>
         </div>
       </div>

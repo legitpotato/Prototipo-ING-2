@@ -9,6 +9,7 @@ const verifyFirebaseToken = async (req, res, next) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
+    req.uid = decodedToken.uid; // 👈 necesario para los controladores
     req.firebaseUser = decodedToken;
     next();
   } catch (error) {
