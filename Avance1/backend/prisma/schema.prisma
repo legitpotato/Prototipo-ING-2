@@ -9,17 +9,18 @@ datasource db {
 
 model User {
   id             Int      @id @default(autoincrement())
-  uid            String   @unique // ID de Firebase
+  uid            String   @unique
   email          String   @unique
   rut            String   @unique
   firstName      String
   lastName       String
   birthDate      DateTime
-  role           String   @default("vecino") // "admin", "conserje", etc.
+  role           String   @default("vecino")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  pagos     Pago[]  @relation("UserToPago")
-  comunidades UsuarioComunidad[]
+  pagos          Pago[]   @relation("UserToPago")
+  comunidades     UsuarioComunidad[]
+  incidenciasCreadas Incidencia[] @relation("IncidenciasDelCreador")
 }
 
 model Pago {
@@ -50,6 +51,7 @@ model Comunidad {
 
   usuarios     UsuarioComunidad[]
   pagos        Pago[]
+  incidencias  Incidencia[] 
 }
 
 model UsuarioComunidad {
@@ -78,4 +80,31 @@ enum EstadoMiembro {
   ACTIVO
   INACTIVO
   PENDIENTE
+}
+
+model Incidencia {
+  id          Int               @id @default(autoincrement())
+  ubicacion   String
+  importancia Importancia
+  descripcion String
+  estado      EstadoIncidencia
+  fotos       String[]
+  comunidadId Int
+  comunidad   Comunidad         @relation(fields: [comunidadId], references: [id])
+  creadorId   Int
+  creador     User              @relation(name: "IncidenciasDelCreador", fields: [creadorId], references: [id])
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+enum Importancia {
+  Alta
+  Media
+  Baja
+}
+
+enum EstadoIncidencia {
+  Nuevo
+  EnProceso
+  Resuelto
 }
