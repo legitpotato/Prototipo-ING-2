@@ -77,7 +77,7 @@ console.log('Comunidad activa2:', comunidadActiva);
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6 text-black">Gestión de Usuarios</h1>
+      <h1 className="text-3xl font-bold mb-6 text-indigo-500">Gestión de Usuarios</h1>
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200 text-black">
           <tr>
@@ -110,7 +110,7 @@ console.log('Comunidad activa2:', comunidadActiva);
 
       <button
         onClick={guardarCambios}
-        className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        className="mt-6 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
       >
         Guardar Cambios
       </button>

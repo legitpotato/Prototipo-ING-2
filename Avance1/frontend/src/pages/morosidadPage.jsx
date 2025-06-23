@@ -15,27 +15,22 @@ export default function MorosidadPage() {
   const { user } = useAuth();
   const [iaCargando, setIaCargando] = useState(false);
 
-
   useEffect(() => {
     const auth = getAuth();
-
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        console.warn('Usuario no autenticado');
-        navigate('/login'); // Redirige al login si no hay sesión
+        navigate('/login');
         return;
       }
 
       try {
         const token = await user.getIdToken();
-
-        const resMorosos = await fetch('/api/morosidad/analisis', {
+        const res = await fetch('/api/morosidad/analisis', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const dataMorosos = await resMorosos.json();
-        setMorosos(dataMorosos);
-      }
-      finally {
+        const data = await res.json();
+        setMorosos(data);
+      } finally {
         setLoading(false);
       }
     });
@@ -51,113 +46,99 @@ export default function MorosidadPage() {
     );
   });
 
-  if (loading) {
-    return <div className="text-black text-center mt-10">Cargando datos...</div>;
-  }
+  if (loading) return <div className="text-black text-center mt-10">Cargando datos...</div>;
 
   return (
-    <div className="flex h-full items-center justify-center p-8">
-      <div className="bg-zinc-800 max-w-8xl w-full p-10 rounded-md overflow-x-auto">
-        <h1 className="text-3xl font-bold text-center mb-6">Análisis de Morosidad</h1>
+    <div className="p-6 max-w-7xl mx-auto text-black">
+      <h1 className="text-3xl font-bold text-indigo-600 mb-6 text-center">Análisis de Morosidad</h1>
 
-        {/* Filtros */}
-        <div className="flex gap-4 mb-6">
-          <input
-            type="text"
-            placeholder="Filtrar por nombre"
-            value={filtroNombre}
-            onChange={(e) => setFiltroNombre(e.target.value)}
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Filtrar por RUT"
-            value={filtroRut}
-            onChange={(e) => setFiltroRut(e.target.value)}
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
-          />
-          <input
-            type="text"
-            placeholder="Filtrar por fecha (YYYY-MM-DD)"
-            value={filtroFecha}
-            onChange={(e) => setFiltroFecha(e.target.value)}
-            className="w-full bg-zinc-700 text-white px-4 py-2 rounded-md"
-          />
-        </div>
+      {/* Filtros */}
+      <div className="grid md:grid-cols-3 gap-4 mb-6">
+        <input
+          type="text"
+          placeholder="Filtrar por nombre"
+          value={filtroNombre}
+          onChange={(e) => setFiltroNombre(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md bg-zinc-100"
+        />
+        <input
+          type="text"
+          placeholder="Filtrar por RUT"
+          value={filtroRut}
+          onChange={(e) => setFiltroRut(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md bg-zinc-100"
+        />
+        <input
+          type="text"
+          placeholder="Filtrar por fecha (YYYY-MM-DD)"
+          value={filtroFecha}
+          onChange={(e) => setFiltroFecha(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md bg-zinc-100"
+        />
+      </div>
 
-        {/* Tabla de morosos */}
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-zinc-700">
-              <th className="border border-zinc-600 px-4 py-2 text-left">Nombre</th>
-              <th className="border border-zinc-600 px-4 py-2 text-left">RUT</th>
-              <th className="border border-zinc-600 px-4 py-2 text-left">Monto Original</th>
-              <th className="border border-zinc-600 px-4 py-2 text-left">Interés Acumulado</th>
-              <th className="border border-zinc-600 px-4 py-2 text-left">Monto Total</th>
-              <th className="border border-zinc-600 px-4 py-2 text-left">Fecha Vencimiento</th>
-              <th className="border border-zinc-600 px-4 py-2 text-left">Días de Atraso</th>
-              <th className="border border-zinc-600 px-4 py-2 text-left">Riesgo</th>
+      {/* Tabla de morosos */}
+      <div className="overflow-x-auto rounded shadow">
+        <table className="w-full text-left border border-gray-300 bg-white">
+          <thead className="bg-gray-200">
+            <tr>
+              {['Nombre', 'RUT', 'Monto Original', 'Interés', 'Total', 'Vencimiento', 'Días Atraso', 'Riesgo'].map((th) => (
+                <th key={th} className="px-4 py-2 border text-sm font-semibold">
+                  {th}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {filtrarMorosos.map((m, i) => (
               <tr
                 key={i}
-                className={
+                className={`${
                   m.riesgo === 'grave'
-                    ? 'bg-red-500'
+                    ? 'bg-red-100'
                     : m.riesgo === 'moderado'
-                    ? 'bg-yellow-500'
-                    : 'bg-green-500'
-                }
+                    ? 'bg-yellow-100'
+                    : 'bg-green-100'
+                }`}
               >
-                <td className="border border-zinc-600 px-4 py-2">{m.nombre}</td>
-                <td className="border border-zinc-600 px-4 py-2">{m.rut}</td>
-                <td className="border border-zinc-600 px-4 py-2">${m.monto_original.toFixed(2)}</td>
-                <td className="border border-zinc-600 px-4 py-2">${m.interes_acumulado.toFixed(2)}</td>
-                <td className="border border-zinc-600 px-4 py-2">${m.monto_total.toFixed(2)}</td>
-                <td className="border border-zinc-600 px-4 py-2">{m.fecha_vencimiento}</td>
-                <td className="border border-zinc-600 px-4 py-2">{m.dias_atraso}</td>
-                <td className="border border-zinc-600 px-4 py-2">{m.riesgo}</td>
+                <td className="border px-4 py-2">{m.nombre}</td>
+                <td className="border px-4 py-2">{m.rut}</td>
+                <td className="border px-4 py-2">${m.monto_original.toFixed(2)}</td>
+                <td className="border px-4 py-2">${m.interes_acumulado.toFixed(2)}</td>
+                <td className="border px-4 py-2">${m.monto_total.toFixed(2)}</td>
+                <td className="border px-4 py-2">{m.fecha_vencimiento}</td>
+                <td className="border px-4 py-2">{m.dias_atraso}</td>
+                <td className="border px-4 py-2 font-semibold capitalize">{m.riesgo}</td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
 
-        {/* Análisis por RUT con IA */}
-        <div className="mt-10 bg-zinc-700 p-6 rounded-md text-white">
-          <h2 className="text-xl font-bold mb-4">Análisis personalizado por RUT</h2>
-          <div className="flex gap-4 mb-4">
-            <input
-              type="text"
-              placeholder="Ingresa RUT del residente"
-              value={filtroRut}
-              onChange={(e) => setFiltroRut(e.target.value)}
-              className="w-full bg-zinc-600 px-4 py-2 rounded-md text-white"
-            />
+      {/* Análisis con IA */}
+      <div className="mt-10 bg-white shadow-md border border-gray-300 p-6 rounded-md">
+        <h2 className="text-xl font-bold text-indigo-600 mb-4">Análisis con IA por RUT</h2>
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <input
+            type="text"
+            placeholder="Ingresa RUT del residente"
+            value={filtroRut}
+            onChange={(e) => setFiltroRut(e.target.value)}
+            className="w-full md:w-2/3 px-4 py-2 border rounded-md bg-zinc-100"
+          />
+          <div className="flex items-center gap-3">
             <button
               onClick={async () => {
                 try {
-                  setIaCargando(true); // Mostrar spinner
-                  if (!user) {
-                    console.warn('Usuario no autenticado');
-                    navigate('/login');
-                    return;
-                  }
-
+                  setIaCargando(true);
                   const firebaseUser = getAuth().currentUser;
                   if (!firebaseUser) {
-                    console.warn('Usuario no autenticado');
                     navigate('/login');
                     return;
                   }
                   const token = await firebaseUser.getIdToken();
-
-
                   const res = await fetch(`/api/morosidad/por-rut/${filtroRut}`, {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                   });
 
                   if (!res.ok) throw new Error('No se pudo obtener el análisis');
@@ -170,45 +151,40 @@ export default function MorosidadPage() {
                   setResumenIA('');
                   setSugerenciaIA('');
                 } finally {
-                  setIaCargando(false); // Ocultar spinner
+                  setIaCargando(false);
                 }
               }}
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-md text-white font-semibold"
+              className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md"
             >
               Analizar
             </button>
+
             {iaCargando && (
-              <div className="flex items-center gap-2 mt-4 text-white">
-                <svg className="animate-spin h-5 w-5 text-blue-400" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <svg className="animate-spin h-5 w-5 text-indigo-500" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                 </svg>
-                <span>Generando análisis con IA...</span>
+                <span>Analizando con IA...</span>
               </div>
             )}
           </div>
         </div>
-
-        {/* Resumen y sugerencia IA */}
-        {resumenIA && (
-          <div className="bg-zinc-700 text-white p-4 rounded-md mt-6">
-            <h2 className="text-xl font-bold mb-2">Resumen de Morosidad</h2>
-            <pre className="whitespace-pre-wrap">{resumenIA}</pre>
-          </div>
-        )}
-
-        {sugerenciaIA ? (
-          <div className="bg-zinc-700 text-white p-4 rounded-md mt-4">
-            <h2 className="text-xl font-bold mb-2">Sugerencia de la IA</h2>
-            <p>{sugerenciaIA}</p>
-          </div>
-        ) : (
-          <div className="bg-zinc-700 text-white p-4 rounded-md mt-4">
-            <h2 className="text-xl font-bold mb-2">Sugerencia de la IA</h2>
-            <p className="italic text-zinc-400">No se pudo generar una sugerencia en este momento.</p>
-          </div>
-        )}
       </div>
+
+      {/* Resultados IA */}
+      {resumenIA && (
+        <div className="mt-6 bg-indigo-100 p-4 rounded-md">
+          <h3 className="font-bold text-indigo-700 mb-2">Resumen generado por IA:</h3>
+          <pre className="whitespace-pre-wrap">{resumenIA}</pre>
+        </div>
+      )}
+      {sugerenciaIA && (
+        <div className="mt-4 bg-green-100 p-4 rounded-md">
+          <h3 className="font-bold text-green-700 mb-2">Sugerencia de la IA:</h3>
+          <p>{sugerenciaIA}</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -41,7 +41,7 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Principal />} />
                 <Route path="/pagos" element={<PagPagos />} />
-                <Route path="/resincidencia" element={<PagResIncidencia />} />
+                <Route path="/incidencias" element={<PagResIncidencia />} />
 
               {/* Ruta accesible por la directiva */}
                 <Route path="/admin/pagos" element={<AdminRoute><PagosTodosPage /></AdminRoute>}/>

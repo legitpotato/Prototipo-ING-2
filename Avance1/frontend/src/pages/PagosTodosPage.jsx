@@ -59,7 +59,7 @@ const PagosTodosPage = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4 text-black">Todos los Pagos Registrados</h2>
+      <h2 className="text-3xl font-bold mb-4 text-indigo-500">Todos los Pagos Registrados</h2>
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-4 items-center mb-6">
