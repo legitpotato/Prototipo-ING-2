@@ -58,7 +58,7 @@ useEffect(() => {
                         to="/pagos" 
                         className="hover:underline hover:text-green-900 px-4 py-1 rounded-sm text-white font-bold"
                     >
-                        Pagos
+                        Mis Pagos
                     </Link>
                 </div>
             </div>
@@ -73,26 +73,41 @@ useEffect(() => {
                             </Link>
                         </li>
 
-                        {user?.role === 'directiva' && (
-                            <li className="mr-6">
-                                <Link 
-                                    to='/añadir-doc' 
-                                    className="bg-zinc-500 hover:bg-zinc-600 px-4 py-1 rounded-sm"
-                                >
-                                    Panel de Administración
-                                </Link>
-                            </li>
-                        )}
-
                         {comunidadActiva?.rol === 'DIRECTIVA' && (
-                        <li className="mr-4">
+                        <>
+                            <li className="mr-4">
                             <Link
-                            to="/usuarios/gestionar"
-                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-sm"
+                                to="/usuarios"
+                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-sm"
                             >
-                            Gestionar Usuarios
+                                Usuarios
                             </Link>
-                        </li>
+                            </li>
+                            <li className="mr-4">
+                            <Link
+                                to="/admin/morosidad"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-sm"
+                            >
+                                Morosidad
+                            </Link>
+                            </li>
+                            <li className="mr-4">
+                            <Link
+                                to="/admin/pagos"
+                                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded-sm"
+                            >
+                                Pagos
+                            </Link>
+                            </li>
+                            <li className="mr-4">
+                            <Link
+                                to="/admin/incidencia"
+                                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 rounded-sm"
+                            >
+                                Incidencias
+                            </Link>
+                            </li>
+                        </>
                         )}
 
                         {comunidades.length > 1 && (

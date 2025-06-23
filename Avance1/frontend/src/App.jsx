@@ -9,9 +9,7 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import PagPagos from './pages/PagPagos';
-import Usuarios from './pages/Usuarios';
 import AdminRoute from "./AdminRoute";
-import PagPagosDirectiva from "./pages/PagPagosDirectiva";
 import PagosTodosPage from './pages/PagosTodosPage';
 import MorosidadPage from './pages/morosidadPage';
 import GestionUsuariosPage from './pages/GestionUsuariosPage';
@@ -42,28 +40,15 @@ function App() {
               {/* Ruta accesible por cualquier usuario autenticado */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Principal />} />
+                <Route path="/pagos" element={<PagPagos />} />
                 <Route path="/resincidencia" element={<PagResIncidencia />} />
+
+              {/* Ruta accesible por la directiva */}
+                <Route path="/admin/pagos" element={<AdminRoute><PagosTodosPage /></AdminRoute>}/>
+                <Route path="/admin/incidencia" element={<AdminRoute><PagIncidencia /></AdminRoute>}/>
+                <Route path="/admin/morosidad" element={<AdminRoute><MorosidadPage /></AdminRoute>}/>
+                <Route path="/usuarios" element={<AdminRoute><GestionUsuariosPage /></AdminRoute>} />
               </Route>
-
-              <Route path="/admin/pagos" element={<AdminRoute><PagosTodosPage /></AdminRoute>}/>
-              <Route path="/admin/incidencia" element={<AdminRoute><PagIncidencia /></AdminRoute>}/>
-              <Route path="/admin/morosidad" element={<AdminRoute><MorosidadPage /></AdminRoute>}/>
-
-                {/* Ruta para residentes */}
-                <Route path="/pagos" element={<ProtectedRoute requiredRole={['admin', 'vecino']} />}>
-                  <Route index element={<PagPagos />} />
-                </Route>
-
-                {/* Ruta para directiva */}
-                <Route element={<ProtectedRoute requiredRole="admin" />}>
-                  <Route path="/usuarios" element={<Usuarios />} />
-                </Route>
-                <Route element={<ProtectedRoute requiredRole="admin" />}>
-                  <Route path="/pagos/todos" element={<PagosTodosPage />} />
-                </Route>
-                <Route element={<ProtectedRoute requiredRole={['admin', 'directiva']} />}>
-                  <Route path="/usuarios/gestionar" element={<GestionUsuariosPage />} />
-                </Route>
               </Routes>
             </main>
 

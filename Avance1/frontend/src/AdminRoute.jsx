@@ -15,8 +15,8 @@ const AdminRoute = ({ children }) => {
 
   console.log("Rol detectado:", role);
 
-  if (!isAuthenticated || role !== "admin") {
-    console.log("No es admin, redirigiendo...");
+  if (!isAuthenticated || role !== "DIRECTIVA") {
+    console.log("No es directiva, redirigiendo...");
     return <Navigate to="/" />;
   }
 
