@@ -18,6 +18,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PagIncidencia from './pages/PagIncidencia';
 import PagResIncidencia from './pages/PagResIncidencia';
+import PagAnunciosDirectiva from './pages/PagAnuncioDirectiva';
+import PagResAnuncios from './pages/PagResAnuncios';
 
 function App() {
   return (
@@ -42,12 +44,14 @@ function App() {
                 <Route path="/" element={<Principal />} />
                 <Route path="/pagos" element={<PagPagos />} />
                 <Route path="/incidencias" element={<PagResIncidencia />} />
+                <Route path="/anuncios" element={<PagResAnuncios />} />
 
               {/* Ruta accesible por la directiva */}
                 <Route path="/admin/pagos" element={<AdminRoute><PagosTodosPage /></AdminRoute>}/>
                 <Route path="/admin/incidencia" element={<AdminRoute><PagIncidencia /></AdminRoute>}/>
                 <Route path="/admin/morosidad" element={<AdminRoute><MorosidadPage /></AdminRoute>}/>
                 <Route path="/usuarios" element={<AdminRoute><GestionUsuariosPage /></AdminRoute>} />
+                <Route path="/admin/anuncios" element={<AdminRoute><PagAnunciosDirectiva /></AdminRoute>} />
               </Route>
               </Routes>
             </main>

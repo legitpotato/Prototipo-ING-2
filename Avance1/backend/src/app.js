@@ -6,6 +6,7 @@ import pagoRoutes from './routes/pagoRoutes.js';
 import morosidadRoutes from './routes/morosidadRoutes.js'
 import comunidadRoutes from './routes/comunidadRoutes.js';
 import incidenciasRoutes from './routes/incidenciasRoutes.js';
+import anuncioRoutes from './routes/anunciosRoutes.js';
 
 const app = express();
 
@@ -18,6 +19,6 @@ app.use('/api', pagoRoutes);
 app.use('/api', morosidadRoutes);
 app.use('/api/comunidades', comunidadRoutes);
 app.use('/api/incidencias', incidenciasRoutes);
-
+app.use('/api/anuncios', anuncioRoutes);
 
 export default app;

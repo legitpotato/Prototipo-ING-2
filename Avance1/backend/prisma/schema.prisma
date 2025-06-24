@@ -19,6 +19,7 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   pagos          Pago[]   @relation("UserToPago")
+  anuncios     Anuncio[]
   comunidades     UsuarioComunidad[]
   incidenciasCreadas Incidencia[] @relation("IncidenciasDelCreador")
 }
@@ -52,6 +53,7 @@ model Comunidad {
   usuarios     UsuarioComunidad[]
   pagos        Pago[]
   incidencias  Incidencia[] 
+  anuncios     Anuncio[]
 }
 
 model UsuarioComunidad {
@@ -108,3 +110,24 @@ enum EstadoIncidencia {
   EnProceso
   Resuelto
 }
+
+model Anuncio {
+  id             Int      @id @default(autoincrement())
+  titulo         String
+  contenido      String
+  tipoAnuncio    String // 'general', 'reunion', 'recordatorio'
+  permitirComentarios Boolean @default(true)
+  permitirReacciones  Boolean @default(true)
+  soloLectura    Boolean @default(false)
+  fechaReunion   DateTime? // opcional
+  plataforma     String?    // opcional
+  enlaceReunion  String?    // opcional
+  comunidadId    Int
+  creadorId      Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  comunidad      Comunidad @relation(fields: [comunidadId], references: [id])
+  creador        User      @relation(fields: [creadorId], references: [id])
+}
+
