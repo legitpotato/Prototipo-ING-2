@@ -1,167 +1,126 @@
-import { Link } from "react-router-dom"; 
-import { useAuth } from "../context/AuthContext"; 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useComunidad } from "../context/ComunidadContext";
+import { HiMenu, HiX } from "react-icons/hi";
 
 function Navbar() {
-    const { isAuthenticated, logout, user } = useAuth(); 
-    const { comunidades, comunidadActiva, setComunidadActiva } = useComunidad();
+  const { isAuthenticated, logout, user } = useAuth();
+  const { comunidades, comunidadActiva, setComunidadActiva } = useComunidad();
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
-
-    useEffect(() => {
+  useEffect(() => {
     const auth = getAuth();
-
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-        if (user) {
+      if (user) {
         const token = await user.getIdToken();
         console.log("🔐 Firebase Token:", token);
-        } else {
+      } else {
         console.log("⚠️ No hay usuario autenticado.");
-        }
+      }
     });
+    return () => unsubscribe();
+  }, []);
 
-  return () => unsubscribe();
-}, []);
+  const toggleMenu = () => setMenuAbierto(!menuAbierto);
 
+  return (
+    <nav className="bg-[#0097b2] text-white px-4 py-3 shadow-md relative">
+      <div className="flex justify-between items-center max-w-7xl mx-auto">
+        {/* Logo y título */}
+        <div className="flex items-center gap-4">
+          <Link to="/" className="flex items-center">
+            <img src="/src/assets/logoComuniRed.png" alt="Logo" className="h-12" />
+            <h1 className="ml-2 text-xl font-bold">ComuniRed</h1>
+          </Link>
+        </div>
 
-useEffect(() => {
-  console.log("Comunidad activa:", comunidadActiva);
-}, [comunidadActiva]);
+        {/* Botón hamburguesa SIEMPRE visible */}
+        <button
+          className="text-3xl"
+          onClick={toggleMenu}
+          aria-label="Abrir menú"
+        >
+          {menuAbierto ? <HiX /> : <HiMenu />}
+        </button>
+      </div>
 
+      {/* Side menu */}
+        <ul
+    className={`fixed top-0 left-0 h-full w-64 bg-[#0097b2] text-white p-6 z-50 transform transition-transform duration-300 ${
+        menuAbierto ? "translate-x-0" : "-translate-x-full"
+    }`}
+    >
+    <div className="flex flex-col space-y-4">
+        {isAuthenticated ? (
+        <>
+            <li className="font-semibold">
+            <Link to="/perfil" onClick={toggleMenu}>
+                ¡Hola {user?.firstName || user?.displayName || user?.email}!
+            </Link>
+            </li>
 
-    useEffect(() => {
-        console.log("Usuario actualizado:", user);
-    }, []);
+            <li><Link to="/pagos" onClick={toggleMenu}>Mis Pagos</Link></li>
 
-    return (
-        <nav className="w-full h-20 bg-[#0097b2] flex justify-between items-center px-5">
-            {/* Sección izquierda: Logo, título y botón de pagos */}
-            <div className="flex items-center gap-4"> 
-                <a href="/" className="flex items-center">
-                    <img 
-                        src="\src\assets\logoComuniRed.png" 
-                        alt="Logo" 
-                        className="h-16 cursor-pointer" 
-                    />
-                </a>
-                
-                {/* Contenedor para el título y botón de pagos */}
-                <div className="flex items-center gap-4">
-                    <Link to="/" className="ml-4">
-                        <h1 className="text-2xl font-bold">
-                            ComuniRed
-                        </h1>
-                    </Link>
+            {comunidadActiva?.rol === "DIRECTIVA" && (
+            <>
+                <li><Link to="/usuarios" onClick={toggleMenu}>Usuarios</Link></li>
+                <li><Link to="/admin/morosidad" onClick={toggleMenu}>Morosidad</Link></li>
+                <li><Link to="/admin/pagos" onClick={toggleMenu}>Pagos</Link></li>
+                <li><Link to="/admin/incidencia" onClick={toggleMenu}>Incidencias</Link></li>
+            </>
+            )}
 
-                    <Link 
-                        to="/pagos" 
-                        className="hover:underline hover:text-green-900 px-4 py-1 rounded-sm text-white font-bold"
-                    >
-                        Mis Pagos
-                    </Link>
-                </div>
-            </div>
+            {comunidades.length > 1 && (
+            <li className="pt-2">
+                <select
+                value={comunidadActiva?.id || ""}
+                onChange={(e) => {
+                    const seleccionada = comunidades.find(c => c.id === e.target.value);
+                    setComunidadActiva(seleccionada);
+                }}
+                className="text-black px-2 py-1 rounded w-full"
+                >
+                {comunidades.map((comunidad) => (
+                    <option key={comunidad.id} value={comunidad.id}>
+                    {comunidad.nombre}
+                    </option>
+                ))}
+                </select>
+            </li>
+            )}
 
-            {/* Sección derecha: Enlaces de navegación */}
-            <ul className="flex gap-x-2 items-center">
-                {isAuthenticated ? (
-                    <>
-                        <li className="font-bold text-lg mr-8">
-                            <Link to="/perfil" className="hover:underline hover:text-black">
-                                ¡Bienvenido {user?.displayName || user?.email}!
-                            </Link>
-                        </li>
-
-                        {comunidadActiva?.rol === 'DIRECTIVA' && (
-                        <>
-                            <li className="mr-4">
-                            <Link
-                                to="/usuarios"
-                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-sm"
-                            >
-                                Usuarios
-                            </Link>
-                            </li>
-                            <li className="mr-4">
-                            <Link
-                                to="/admin/morosidad"
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-sm"
-                            >
-                                Morosidad
-                            </Link>
-                            </li>
-                            <li className="mr-4">
-                            <Link
-                                to="/admin/pagos"
-                                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded-sm"
-                            >
-                                Pagos
-                            </Link>
-                            </li>
-                            <li className="mr-4">
-                            <Link
-                                to="/admin/incidencia"
-                                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1 rounded-sm"
-                            >
-                                Incidencias
-                            </Link>
-                            </li>
-                        </>
-                        )}
-
-                        {comunidades.length > 1 && (
-                        <li className="mr-4">
-                            <select
-                            value={comunidadActiva?.id || ''}
-                            onChange={(e) => {
-                                const seleccionada = comunidades.find(c => c.id === e.target.value);
-                                setComunidadActiva(seleccionada);
-                            }}
-                            className="bg-white text-black px-2 py-1 rounded"
-                            >
-                            {comunidades.map((comunidad) => (
-                                <option key={comunidad.id} value={comunidad.id}>
-                                {comunidad.nombre}
-                                </option>
-                            ))}
-                            </select>
-                        </li>
-                        )}
-
-                        <li>
-                            <Link 
-                                to='/' 
-                                className="font-bold hover:underline hover:text-red-500 px-4 py-1 rounded-sm" 
-                                onClick={() => { logout(); }}
-                            >
-                                Cerrar Sesión
-                            </Link>
-                        </li>
-                    </>
-                ) : (
-                    <>
-                        <li>
-                            <Link 
-                                to='/login' 
-                                className="bg-zinc-400 hover:bg-zinc-500 px-4 py-1 rounded-sm"
-                            >
-                                Iniciar Sesión
-                            </Link>
-                        </li>
-                        <li>
-                            <Link 
-                                to='/register' 
-                                className="bg-zinc-400 hover:bg-zinc-500 px-4 py-1 rounded-sm"
-                            >
-                                Registrarse
-                            </Link>
-                        </li>
-                    </>
-                )}
-            </ul>
-        </nav>
-    );
+            <li className="pt-4">
+            <button
+                onClick={() => {
+                logout();
+                toggleMenu();
+                }}
+                className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded w-full"
+            >
+                Cerrar Sesión
+            </button>
+            </li>
+        </>
+        ) : (
+        <>
+            <li>
+            <Link to="/login" onClick={toggleMenu} className="bg-white text-black px-4 py-2 rounded block text-center hover:bg-gray-200">
+                Iniciar Sesión
+            </Link>
+            </li>
+            <li>
+            <Link to="/register" onClick={toggleMenu} className="bg-white text-black px-4 py-2 rounded block text-center hover:bg-gray-200">
+                Registrarse
+            </Link>
+            </li>
+        </>
+        )}
+    </div>
+    </ul>
+    </nav>
+  );
 }
 
 export default Navbar;
