@@ -138,6 +138,7 @@ export default function PagPagos() {
                 <tr className="bg-gray-200">
                   <th className="border px-4 py-3 text-left">Descripción</th>
                   <th className="border px-4 py-3 text-left">Estado</th>
+                  <th className="border px-4 py-3 text-left">Monto Total</th>
                   <th className="border px-4 py-3 text-left">Fecha Creación</th>
                   <th className="border px-4 py-3 text-left">Fecha Vencimiento</th>
                 </tr>
@@ -151,6 +152,7 @@ export default function PagPagos() {
                   >
                     <td className="border px-4 py-2">{pago.descripcion}</td>
                     <td className="border px-4 py-2">{pago.estado}</td>
+                    <td className="border px-4 py-2">${pago.monto_total.toFixed(2)}</td>
                     <td className="border px-4 py-2">{formatearFecha(pago.fecha_emision)}</td>
                     <td className="border px-4 py-2">{formatearFecha(pago.fecha_vencimiento)}</td>
                   </tr>

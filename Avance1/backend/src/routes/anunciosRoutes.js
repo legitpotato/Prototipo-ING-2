@@ -25,5 +25,21 @@ router.get('/:comunidadId', verifyFirebaseToken, async (req, res) => {
   }
 });
 
+// GET /api/anuncios/comunidad/:comunidadId/ultimos
+router.get('/comunidad/:comunidadId/ultimos', async (req, res) => {
+  try {
+    const { comunidadId } = req.params;
+    const ultimos = await prisma.anuncio.findMany({
+      where: { comunidadId: parseInt(comunidadId) },
+      orderBy: { createdAt: 'desc' },
+      take: 2,
+    });
+    res.json(ultimos);
+  } catch (error) {
+    console.error('Error al obtener los últimos anuncios:', error);
+    res.status(500).json({ message: 'Error al obtener los últimos anuncios.' });
+  }
+});
+
 
 export default router;
