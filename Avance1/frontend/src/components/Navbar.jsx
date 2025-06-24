@@ -61,14 +61,25 @@ function Navbar() {
             </Link>
             </li>
 
-            <li><Link to="/pagos" onClick={toggleMenu}>Mis Pagos</Link></li>
+            
+
+            {comunidadActiva?.rol === "VECINO" && (
+            <>
+              <li><Link to="/pagos" onClick={toggleMenu}>Mis Pagos</Link></li>
+              <li><Link to="/incidencias" onClick={toggleMenu}>Incidencias</Link></li>
+              <li><Link to="/anuncios" onClick={toggleMenu}>Anuncios</Link></li>
+            </>
+            )}
+
 
             {comunidadActiva?.rol === "DIRECTIVA" && (
             <>
+                <li><Link to="/pagos" onClick={toggleMenu}>Mis Pagos</Link></li>
                 <li><Link to="/usuarios" onClick={toggleMenu}>Usuarios</Link></li>
                 <li><Link to="/admin/morosidad" onClick={toggleMenu}>Morosidad</Link></li>
                 <li><Link to="/admin/pagos" onClick={toggleMenu}>Pagos</Link></li>
                 <li><Link to="/admin/incidencia" onClick={toggleMenu}>Incidencias</Link></li>
+                <li><Link to="/admin/anuncios" onClick={toggleMenu}>Anuncios</Link></li>
             </>
             )}
 
