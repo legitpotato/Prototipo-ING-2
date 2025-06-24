@@ -12,8 +12,10 @@ router.post('/usuarios', verifyFirebaseToken, async (req, res) => {
 
   try {
     // Convertir fecha de "DD/MM/YYYY" a Date
-    const [day, month, year] = birthDate.split('/');
-    const formattedDate = new Date(`${year}-${month}-${day}`);
+    const formattedDate = new Date(birthDate);
+    if (isNaN(formattedDate)) {
+      return res.status(400).json({ message: 'Fecha de nacimiento inválida' });
+    }
 
     const existingUser = await prisma.user.findUnique({ where: { uid } });
     if (existingUser) {
